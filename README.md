@@ -1,2 +1,2 @@
-# Virgil_Backend
-API backend for the Virgil mobile app and content management system
+# 6Zeta
+Backend-as-a-Service infrastructure based on PHRoute, PDO. Front-end generating code (AngularJS/Backbone)
