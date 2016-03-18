@@ -1,8 +1,9 @@
 <?php
 /*Test Functions*/
 $routePrefix = 'Virgil_Backend/index.php/';
-$router->get($routePrefix.'helloworld', function(){
-	return json_encode("Hello, World!");
+$router->get($routePrefix.'hello/{name}', function($name){
+	$str = "Hello, " . $name . "!";
+	return json_encode($str);
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->get($routePrefix.'getEntireMuseum/{id}', function($id){
