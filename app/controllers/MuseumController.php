@@ -1,24 +1,22 @@
 <?php
-class FeedController
+class MuseumController
 {
-	private $feedModel;
+	private $museumModel;
 	
 	// id | to | from | message
 	public function __construct() {
-		$this->feedModel = new FeedModel();
+		$this->museumModel = new MuseumModel();
 	}
 	
 	public function __destruct() {
-		$this->feedModel = null;
+		$this->museumModel = null;
 	}
 	
-	public function addMessage() {
+	public function getEntireMuseum() {
 		$arrValues = array();
-		$arrValues['sender'] = $_REQUEST['sender'];
-		$arrValues['receiver'] = $_REQUEST['receiver'];
-		$arrValues['message'] = $_REQUEST['message'];
+		$id = $_REQUEST['id'];
 		
-		$arrResult = $this->feedModel->addMessage($arrValues);
+		$arrResult = $this->museumModel->getEntireMuseum($id);
 		return $arrResult;
 	}
 	

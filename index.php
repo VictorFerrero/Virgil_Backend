@@ -1,7 +1,7 @@
 <?php
 
 	require_once ('vendor/autoload.php');
-	require_once ("app/config/config.php");
+	require_once ('app/config/config.php');
 	require_once ('app/compiled/models.php');
 	require_once ('app/compiled/controllers.php');
 	require_once ('app/filters.php');

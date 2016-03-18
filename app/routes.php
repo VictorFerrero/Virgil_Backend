@@ -1,9 +1,17 @@
 <?php
 /*Test Functions*/
-$routePrefix = 'culinarydirectors/index.php/';
-$router->get($routePrefix.'helloworld', function(){
-	return Test::getIndex();
+$routePrefix = 'Virgil_Backend/index.php/';
+$router->get($routePrefix.'hello/{name}', function($name){
+	$str = "Hello, " . $name . "!";
+	return json_encode($str);
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->get($routePrefix.'getEntireMuseum/{id}', function($id){
+	$museumController = new MuseumController();
+	$_REQUEST['id'] = $id;
+	return json_encode($museumController->getEntireMuseum($id));
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
 
 /*Webservice Functions*/
 // start UserController

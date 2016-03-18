@@ -25,10 +25,10 @@ class DB_Connections
 			 $success = true;
 		 } catch(Exception $e) {
 			 $success = false;
-		//	 $arrReturn['error'] = $e->getMessage();
+			 $arrReturn['error'] = $e->getMessage();
 		 }
-	//	 $arrReturn['success'] = $success;
-	//	 $arrReturn['DBO'] = $db;
+		 $arrReturn['success'] = $success;
+		 $arrReturn['DBO'] = $db;
 		 return $db;
 	}	
 }
