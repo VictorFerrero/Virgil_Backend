@@ -13,30 +13,42 @@ class FeedModel
 		$this->dbo = null;
 	}
 	
-	/**
-		expected input: 
-		$arrValues = array( 
-		'to' => enum, ["lateplate","noshow","thumbs"]
-		'from' => 1 for lateplate/noshow -- any entries in here mean "i do have a lateplate/noshow",
-							there is no entry in this table for other cases, 1 for thumbs up and 0 for thumbs down
-		'message' => the id of the menu item that this feedback corresponds to
-		)
-		output:
-		$arrResult = array (
-		'error' => exception object for db query
-		'success' => true if message was successfuly added, false otherwise
-		);
-	*/
-	public function addMessage($arrValues) {
+
+	public function getEntireMuseum($id) {
 		$arrResult = array();
-		$success = false;		
-		$sender = $arrValues['sender'];
-		$receiver = $arrValues['receiver'];
-	    $message = $arrValues['message'];
+		$success = false;
 		 try {
-			$data = array( 'sender' => $sender, 'receiver' => $receiver, 'message' => $message);
-			$STH = $this->dbo->prepare("INSERT INTO feed VALUES (NULL, :sender, :receiver, :message)");
+		 	// lets get the record that corresponds to this museum
+		    $sql = "SELECT * FROM museum WHERE id=:id";		
+			$data = array('id' => $id);
+			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // should only be 1 museum with this id
+			$arrResult['museum'] = $fetch;
+
+			// now we need to get the Galleries in this museum
+			$sql = "SELECT * FROM gallery WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['galleries'] = $fetch;
+
+			// now we need to get all the exhibits that are in this museum
+			$sql = "SELECT * FROM exhibit WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['exhibits'] = $fetch;
+
+			// and finally we need to get all of the content that is in this museum
+			$sql = "SELECT * FROM content WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['content'] = $fetch;
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
