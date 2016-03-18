@@ -7,6 +7,7 @@ class MuseumModel
 	 public function __construct() {
 			$db = new DB_Connections();
 			$this->dbo = $db->getNewDBO();
+			var_dump($this->dbo);
 	 }
 
 	public function __destruct() {
