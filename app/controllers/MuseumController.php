@@ -19,6 +19,11 @@ class MuseumController
 		$arrResult = $this->museumModel->getEntireMuseum($id);
 		return $arrResult;
 	}
+
+	public function getMuseums($strSearchQuery) {
+		$arrResult = $this->museumModel->getMuseums($strSearchQuery);
+		return $arrResult;
+	}
 	
 	public function deleteMessageById() {
 		$arrValues = array();

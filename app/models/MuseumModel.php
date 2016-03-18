@@ -57,6 +57,25 @@ class MuseumModel
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
+
+	public function getMuseums($strSearchQuery) {
+		$arrResult = array();
+		$success = false;
+
+		try {
+			$sql = "SELECT * FROM museums WHERE museumName LIKE '%" . $strSearchQuery . "%'";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // we might get multiple museums with similar names
+			$arrResult['museums'] = $fetch;
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
 	
 	/**
 		expected input: 
@@ -91,6 +110,7 @@ class MuseumModel
 		expected input: 
 		$arrValues = array( 
 		'id' => id for where clause
+
 		'where_clause' => must be of the form 'column'=:id
 		
 		output:

@@ -1,5 +1,5 @@
 <?php
-class MenuController{
+class AccountController{
 	/*
 	 * does feed_back table need a field for menu_item_id. Otherwise, how do we know
 	 * which menu item the feedback is for?
@@ -16,17 +16,17 @@ class MenuController{
 	 * add menu_item_id to feedback
 	 */
 	
-	 private $menuModel; 
+	 private $accountController; 
 	
 	public function __construct() {
 		// TODO: 
-		 $this->menuModel = new MenuModel();
+		 $this->accountController = new AccountController();
 	 }
 	 
 	 public function __destruct() {
 		 // ensure that the MenuModel destructor gets called to properly
 		 // close the database connection
-		 $this->menuModel = null;
+		 $this->accountController = null;
 	 }	 
 
 // create a menu. Menu Table schema = 

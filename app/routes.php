@@ -9,7 +9,12 @@ $router->get($routePrefix.'hello/{name}', function($name){
 $router->get($routePrefix.'getEntireMuseum/{id}', function($id){
 	$museumController = new MuseumController();
 	$_REQUEST['id'] = $id;
-	return json_encode($museumController->getEntireMuseum($id));
+	return json_encode($museumController->getEntireMuseum());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->get($routePrefix.'getMuseums/{queryString}', function($queryString){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getMuseums($queryString));
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 
