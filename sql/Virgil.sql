@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `gallery` (
 CREATE TABLE IF NOT EXISTS `exhibit` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `galleryId` int(11) UNSIGNED NOT NULL,
+  `museumId` int(11) UNSIGNED NOT NULL,
   `name` varchar(64) NOT NULL,
   `exhibitProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
@@ -87,7 +88,8 @@ CREATE TABLE IF NOT EXISTS `exhibit` (
 CREATE TABLE IF NOT EXISTS `content` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `galleryId` int(11) UNSIGNED NOT NULL,
-  `exhibitId` int(11) UNISIGNED NOT NULL,
+  `exhibitId` int(11) UNSIGNED NOT NULL,
+  `museumId` int(11) UNSIGNED NOT NULL,
   `description` text NOT NULL,
   `pathToContent` varchar(64) NOT NULL,
   `contentProfileJSON` text NOT NULL,
