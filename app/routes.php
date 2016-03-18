@@ -7,9 +7,9 @@ $router->get($routePrefix.'hello/{name}', function($name){
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->get($routePrefix.'getEntireMuseum/{id}', function($id){
-	//$museumController = new MuseumController();
+	$museumController = new MuseumController();
 	$_REQUEST['id'] = $id;
-	return json_encode($id);
+	return json_encode($museumController->getEntireMuseum($id));
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 
