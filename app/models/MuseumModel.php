@@ -63,7 +63,7 @@ class MuseumModel
 		$success = false;
 
 		try {
-			$sql = "SELECT * FROM museums WHERE museumName LIKE '%" . $strSearchQuery . "%'";
+			$sql = "SELECT * FROM museum WHERE MATCH(museumName) AGAINST (" . "'" . $strSearchQuery . "'" . ")";
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // we might get multiple museums with similar names
