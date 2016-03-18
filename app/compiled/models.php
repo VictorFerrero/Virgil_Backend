@@ -555,7 +555,7 @@ class DB_Connections
 ?>
 <?php
 
-class FeedModel
+class MuseumModel
 {
 	private $dbo;
 		

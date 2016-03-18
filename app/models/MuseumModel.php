@@ -1,6 +1,6 @@
 <?php
 
-class FeedModel
+class MuseumModel
 {
 	private $dbo;
 		
