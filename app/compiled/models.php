@@ -1,153 +1,4 @@
 <?php
-
-class DB_Connections
-{
-		
-	 public function __construct() {
-		
-	 }
-		
-	public function getNewDBO() {
-		$arrReturn = array();
-		$success = false;
-		$db = null;
-		// TODO: accessing db credentials=> connection string, username and password??
-		$arrCredentials = DatabaseConnectionStrings::getDBCredentials("local");
-		
-		$dsn = $arrCredentials['dsn'];
-		$user = $arrCredentials['username'];
-		$password = $arrCredentials['password'];
-		$options = $arrCredentials['options'];
-		
-		try {
-			 $db = new PDO($dsn, $user, $password);
-			 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // make PDO throw exceptions
-			 $success = true;
-		 } catch(Exception $e) {
-			 $success = false;
-		//	 $arrReturn['error'] = $e->getMessage();
-		 }
-	//	 $arrReturn['success'] = $success;
-	//	 $arrReturn['DBO'] = $db;
-		 return $db;
-	}	
-}
-
-?>
-<?php
-
-class FeedModel
-{
-	private $dbo;
-		
-	 public function __construct() {
-			$db = new DB_Connections();
-			$this->dbo = $db->getNewDBO();
-	 }
-
-	public function __destruct() {
-		$this->dbo = null;
-	}
-	
-	/**
-		expected input: 
-		$arrValues = array( 
-		'to' => enum, ["lateplate","noshow","thumbs"]
-		'from' => 1 for lateplate/noshow -- any entries in here mean "i do have a lateplate/noshow",
-							there is no entry in this table for other cases, 1 for thumbs up and 0 for thumbs down
-		'message' => the id of the menu item that this feedback corresponds to
-		)
-		output:
-		$arrResult = array (
-		'error' => exception object for db query
-		'success' => true if message was successfuly added, false otherwise
-		);
-	*/
-	public function addMessage($arrValues) {
-		$arrResult = array();
-		$success = false;		
-		$sender = $arrValues['sender'];
-		$receiver = $arrValues['receiver'];
-	    $message = $arrValues['message'];
-		 try {
-			$data = array( 'sender' => $sender, 'receiver' => $receiver, 'message' => $message);
-			$STH = $this->dbo->prepare("INSERT INTO feed VALUES (NULL, :sender, :receiver, :message)");
-			$STH->execute($data);
-			$success = true;
-		} catch (Exception $e) {
-			$success = false;
-			$arrResult['error'] = $e->getMessage();
-		}
-		$arrResult['success'] = $success;
-		return $arrResult;
-	}
-	
-	/**
-		expected input: 
-		$id
-		
-		output:
-		$arrResult = array (
-		'error' => exception object for db query
-		'success' => true if delete was successfuly created, false otherwise
-		);
-	*/
-	public function deleteMessage($arrValues) {
-		$arrResult = array();
-		$success = false;
-		$id = $arrValues['id'];
-		$whereClause = $arrValues['where_clause'];
-		$sql = "DELETE FROM feed WHERE " . $whereClause;
-		try{
-			$stm = $this->dbo->prepare($sql);
-			$stm->bindParam(":id", $id);
-			$arrResult['db_result'] = $stm->execute();
-			$success = true;
-		} catch(Exception $e) {
-			$arrResult['error'] = $e->getMessage();
-			$success = false;
-		}
-		$arrResult['success'] = $success;
-		return $arrResult;
-	}
-
-	/**
-		expected input: 
-		$arrValues = array( 
-		'id' => id for where clause
-		'where_clause' => must be of the form 'column'=:id
-		
-		output:
-		$arrResult = array (
-		'error' => exception object for db query
-		'success' => true if menu was successfuly selected, false otherwise
-		'data' => the array of menus which satisfied the where clause
-		);
-	*/
-	public function getMessages($arrValues) {
-		$arrResult = array();
-		$success = false;
-		$id = $arrValues['id'];
-		$whereClause = $arrValues['where_clause'];
-		$sql = "SELECT * FROM feed WHERE " . $whereClause;
-		 try {
-			$STH = $this->dbo->prepare($sql);
-			$STH->bindParam(":id", $id);
-			$STH->execute();
-			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-			$arrResult['data'] = $fetch;
-			$success = true;
-		} catch (Exception $e) {
-			$arrResult['error'] = $e->getMessage();
-			$success = false; // assume username is invalid if we get an exception
-		}
-		$arrResult['success'] = $success;
-	    return $arrResult;
-	}
-}
-
-?>
-<?php
 // TODO: we need accessors for the menu table. 
 // not sure what field we should be selecting on.
 class MenuModel
@@ -665,6 +516,167 @@ class MenuModel
 		return $arrResult;	
 	}
 }
+?>
+<?php
+
+class DB_Connections
+{
+		
+	 public function __construct() {
+		
+	 }
+		
+	public function getNewDBO() {
+		$arrReturn = array();
+		$success = false;
+		$db = null;
+		// TODO: accessing db credentials=> connection string, username and password??
+		$arrCredentials = DatabaseConnectionStrings::getDBCredentials("local");
+		
+		$dsn = $arrCredentials['dsn'];
+		$user = $arrCredentials['username'];
+		$password = $arrCredentials['password'];
+		$options = $arrCredentials['options'];
+		
+		try {
+			 $db = new PDO($dsn, $user, $password);
+			 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // make PDO throw exceptions
+			 $success = true;
+		 } catch(Exception $e) {
+			 $success = false;
+		//	 $arrReturn['error'] = $e->getMessage();
+		 }
+	//	 $arrReturn['success'] = $success;
+	//	 $arrReturn['DBO'] = $db;
+		 return $db;
+	}	
+}
+
+?>
+<?php
+
+class FeedModel
+{
+	private $dbo;
+		
+	 public function __construct() {
+			$db = new DB_Connections();
+			$this->dbo = $db->getNewDBO();
+	 }
+
+	public function __destruct() {
+		$this->dbo = null;
+	}
+	
+
+	public function getEntireMuseum($id) {
+		$arrResult = array();
+		$success = false;
+		 try {
+		 	// lets get the record that corresponds to this museum
+		    $sql = "SELECT * FROM museum WHERE id=:id";		
+			$data = array('id' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // should only be 1 museum with this id
+			$arrResult['museum'] = $fetch;
+
+			// now we need to get the Galleries in this museum
+			$sql = "SELECT * FROM gallery WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['galleries'] = $fetch;
+
+			// now we need to get all the exhibits that are in this museum
+			$sql = "SELECT * FROM exhibit WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['exhibits'] = $fetch;
+
+			// and finally we need to get all of the content that is in this museum
+			$sql = "SELECT * FROM content WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['content'] = $fetch;
+			$success = true;
+		} catch (Exception $e) {
+			$success = false;
+			$arrResult['error'] = $e->getMessage();
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	
+	/**
+		expected input: 
+		$id
+		
+		output:
+		$arrResult = array (
+		'error' => exception object for db query
+		'success' => true if delete was successfuly created, false otherwise
+		);
+	*/
+	public function deleteMessage($arrValues) {
+		$arrResult = array();
+		$success = false;
+		$id = $arrValues['id'];
+		$whereClause = $arrValues['where_clause'];
+		$sql = "DELETE FROM feed WHERE " . $whereClause;
+		try{
+			$stm = $this->dbo->prepare($sql);
+			$stm->bindParam(":id", $id);
+			$arrResult['db_result'] = $stm->execute();
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	/**
+		expected input: 
+		$arrValues = array( 
+		'id' => id for where clause
+		'where_clause' => must be of the form 'column'=:id
+		
+		output:
+		$arrResult = array (
+		'error' => exception object for db query
+		'success' => true if menu was successfuly selected, false otherwise
+		'data' => the array of menus which satisfied the where clause
+		);
+	*/
+	public function getMessages($arrValues) {
+		$arrResult = array();
+		$success = false;
+		$id = $arrValues['id'];
+		$whereClause = $arrValues['where_clause'];
+		$sql = "SELECT * FROM feed WHERE " . $whereClause;
+		 try {
+			$STH = $this->dbo->prepare($sql);
+			$STH->bindParam(":id", $id);
+			$STH->execute();
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$arrResult['data'] = $fetch;
+			$success = true;
+		} catch (Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false; // assume username is invalid if we get an exception
+		}
+		$arrResult['success'] = $success;
+	    return $arrResult;
+	}
+}
+
 ?>
 <?php
 /*
@@ -1202,4 +1214,33 @@ class UserModel{
 	}
 }
 
+?>
+<?php
+
+
+class DatabaseConnectionStrings{
+
+	private static $MySQL_DSCS = "localhost:root:r00t:culinarydirectors"; // TODO: need to get MySql connection string
+	
+	// just default to MySql right now
+	public static function getDBCS($dbNickname) {		
+	//	if(strcmp($dbNickname, "MySQL") == 0) {
+			return DatabaseConnectionStrings::$MySQL_DSCS;
+	//	}
+	}
+	
+	public static function getDBCredentials($environment){
+		$environment = 'local';
+		//TODO: get nickname from environment->nickname mapping (maybe assoc array)?
+		$numericalArr = explode(':',DatabaseConnectionStrings::getDBCS("MySQL_local"));
+		$optionsArr = array();
+		return array("host"=>$numericalArr[0],
+					"username"=>$numericalArr[1],
+					"password"=>$numericalArr[2],
+					"schema"=>$numericalArr[3],
+					"dsn"=>'mysql:host='.$numericalArr[0].';dbname='.$numericalArr[3].'',
+					"options"=>$optionsArr);
+	}
+
+}
 ?>
