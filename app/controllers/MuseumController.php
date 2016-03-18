@@ -5,11 +5,11 @@ class MuseumController
 	
 	// id | to | from | message
 	public function __construct() {
-		$this->feedModel = new FeedModel();
+		$this->museumModel = new MuseumModel();
 	}
 	
 	public function __destruct() {
-		$this->feedModel = null;
+		$this->museumModel = null;
 	}
 	
 	public function getEntireMuseum() {
