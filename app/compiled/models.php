@@ -618,7 +618,7 @@ class MuseumModel
 		$success = false;
 
 		try {
-			$sql = "SELECT * FROM museums WHERE museumName LIKE '%" . $strSearchQuery . "%'";
+			$sql = "SELECT * FROM museum WHERE MATCH(museumName) AGAINST (" . "'" . $strSearchQuery . "'" . ")";
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // we might get multiple museums with similar names
@@ -627,6 +627,25 @@ class MuseumModel
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	
+	public function getAllMuseums() {
+		$arrResult = array();
+		$success = false;
+		 try {
+		 	// lets get the record that corresponds to this museum
+		    $sql = "SELECT * FROM museum";		
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute();
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); 
+			$arrResult['museums'] = $fetch;
+			$success = true;
+		} catch (Exception $e) {
+			$success = false;
+			$arrResult['error'] = $e->getMessage();
 		}
 		$arrResult['success'] = $success;
 		return $arrResult;

@@ -77,6 +77,25 @@ class MuseumModel
 		return $arrResult;
 	}
 	
+	public function getAllMuseums() {
+		$arrResult = array();
+		$success = false;
+		 try {
+		 	// lets get the record that corresponds to this museum
+		    $sql = "SELECT * FROM museum";		
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute();
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); 
+			$arrResult['museums'] = $fetch;
+			$success = true;
+		} catch (Exception $e) {
+			$success = false;
+			$arrResult['error'] = $e->getMessage();
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	
 	/**
 		expected input: 
 		$id

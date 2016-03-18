@@ -17,6 +17,11 @@ $router->get($routePrefix.'getMuseums/{queryString}', function($queryString){
 	return json_encode($museumController->getMuseums($queryString));
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
+$router->get($routePrefix.'getAllMuseums', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getAllMuseums());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
 
 /*Webservice Functions*/
 // start UserController

@@ -25,6 +25,10 @@ class MuseumController
 		return $arrResult;
 	}
 	
+	public function getAllMuseums() {
+		return $this->museumModel->getAllMuseums();
+	}
+	
 	public function deleteMessageById() {
 		$arrValues = array();
 		$arrValues['id'] = $_REQUEST['id']; // id of thing we want to delete
