@@ -15,8 +15,6 @@ class MuseumModel
 	
 
 	public function getEntireMuseum($id) {
-		return $this-dbo;
-		/*
 		$arrResult = array();
 		$success = false;
 		 try {
@@ -58,7 +56,6 @@ class MuseumModel
 		}
 		$arrResult['success'] = $success;
 		return $arrResult;
-		*/
 	}
 	
 	/**
