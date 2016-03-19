@@ -1,5 +1,4 @@
 <?php
-
 class MuseumModel
 {
 	private $dbo;
@@ -13,7 +12,6 @@ class MuseumModel
 		$this->dbo = null;
 	}
 	
-
 	public function getEntireMuseum($id) {
 		$arrResult = array();
 		$success = false;
@@ -81,7 +79,6 @@ class MuseumModel
 		$arrResult = array();
 		$success = false;
 		 try {
-		 	// lets get the record that corresponds to this museum
 		    $sql = "SELECT * FROM museum";		
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute();
@@ -95,69 +92,128 @@ class MuseumModel
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
-	
-	/**
-		expected input: 
-		$id
-		
-		output:
-		$arrResult = array (
-		'error' => exception object for db query
-		'success' => true if delete was successfuly created, false otherwise
-		);
-	*/
-	public function deleteMessage($arrValues) {
+
+	public function createMuseum() {
 		$arrResult = array();
 		$success = false;
-		$id = $arrValues['id'];
-		$whereClause = $arrValues['where_clause'];
-		$sql = "DELETE FROM feed WHERE " . $whereClause;
-		try{
-			$stm = $this->dbo->prepare($sql);
-			$stm->bindParam(":id", $id);
-			$arrResult['db_result'] = $stm->execute();
+		$accountId = $_POST['accountId'];
+		$museumName = $_POST['museumName'];
+		$address = $_POST['address'];
+		$museumProfileJSON = $_POST['museumProfileJSON'];
+
+		try {
+			$sql = "INSERT INTO museum VALUES (NULL, :accountId, :museumName,:address, :museumProfileJSON)";
+			$data = array(
+				'accountId' => $_POST['accountId'],
+				'museumName' => $_POST['museumName'],
+				'address' => $_POST['address'],
+				'museumProfileJSON' => $_POST['museumProfileJSON']
+				)
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'] = $STH->execute($data);
 			$success = true;
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
 		}
+		$arrResult['accountId'] = $_POST['accountId'];
+		$arrResult['museumName'] = $_POST['museumName'];
+		$arrResult['address'] = $_POST['address'];
+		$arrResult['museumProfileJSON'] = $_POST['museumProfileJSON'];
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
 
-	/**
-		expected input: 
-		$arrValues = array( 
-		'id' => id for where clause
-
-		'where_clause' => must be of the form 'column'=:id
-		
-		output:
-		$arrResult = array (
-		'error' => exception object for db query
-		'success' => true if menu was successfuly selected, false otherwise
-		'data' => the array of menus which satisfied the where clause
-		);
-	*/
-	public function getMessages($arrValues) {
+	public function updateMuseum() {
 		$arrResult = array();
 		$success = false;
-		$id = $arrValues['id'];
-		$whereClause = $arrValues['where_clause'];
-		$sql = "SELECT * FROM feed WHERE " . $whereClause;
-		 try {
+		 $sql = "UPDATE museum SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['accountId']) {
+			 $sql = $sql . "accountId=?, ";
+			 $data[$index] = $_POST['accountId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['museumName']) {
+			 $sql = $sql . "museumName=?, ";
+			 $data[$index] = $_POST['museumName'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['address']) {
+			 $sql = $sql . "address=?, ";
+			 $data[$index] = $_POST['address'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['museumProfileJSON'])) {
+			 $sql = $sql . "museumProfileJSON=?, ";
+			 $data[$index] = $_POST['museumProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'] = $e->getMessage();
+			 $success = false;
+		 }	
+		 // use these for debugging
+	//	$arrResult['sql'] = $sql;
+	//	$arrResult['data'] = $data;
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function deleteMuseum() {
+		// must delete everything!!!
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		try {
+			// delete from the museum table
+			$sql = "DELETE FROM museum WHERE id=:id"
 			$STH = $this->dbo->prepare($sql);
-			$STH->bindParam(":id", $id);
-			$STH->execute();
-			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-			$arrResult['data'] = $fetch;
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// delete all the galleries that were associated with this museum
+			$sql = "DELETE FROM gallery WHERE museumId=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// delete all the exhibits associated with this museum
+			$sql = "DELETE FROM exhibit WHERE museumId=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// grab all the file paths to the images that are associated with the content
+			// that is in this museum
+			$sql = "SELECT pathToContent FROM content WHERE museumId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
+			// go through the content array
+			foreach($content as $intIndex => $arrAssoc) {
+				$path = $arrAssoc['pathToContent'];
+				// TODO: do something to remove the image from the server
+			}
+			// delete all the content that was associated with this museum
+			$sql = "DELETE FROM content WHERE museumId=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// now we should be done deleting this museum
 			$success = true;
 		} catch (Exception $e) {
+			$success = false;
 			$arrResult['error'] = $e->getMessage();
-			$success = false; // assume username is invalid if we get an exception
 		}
 		$arrResult['success'] = $success;
-	    return $arrResult;
+		return $arrResult;
 	}
 }
 
