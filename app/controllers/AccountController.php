@@ -24,11 +24,34 @@ class AccountController{
 	 }
 	 
 	 public function __destruct() {
-		 // ensure that the MenuModel destructor gets called to properly
-		 // close the database connection
 		 $this->accountController = null;
 	 }	 
-
+	 
+	 public function login() {
+		$email = $_REQUEST['email'];
+		$password = $_REQUEST['password'];
+		$arrResult = $this->userModel->login($email, $password);
+		return $arrResult;
+	}
+	 
+	 public function createAccount() {
+	 
+	 }
+	 
+	 
+	 public function updateAccount() {
+		 
+	 }
+	 
+	 public function deleteAccount() {
+		 
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
 // create a menu. Menu Table schema = 
 // id | chef_id | week (0-52) | day (0-7) | approved (0-1)
 	 public function createMenu() {

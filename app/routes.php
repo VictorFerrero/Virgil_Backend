@@ -6,6 +6,8 @@ $router->get($routePrefix.'hello/{name}', function($name){
 	return json_encode($str);
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
+
+// start of routes for the mobile app
 $router->get($routePrefix.'getEntireMuseum/{id}', function($id){
 	$museumController = new MuseumController();
 	$_REQUEST['id'] = $id;
@@ -20,6 +22,19 @@ $router->get($routePrefix.'getMuseums/{queryString}', function($queryString){
 $router->get($routePrefix.'getAllMuseums', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->getAllMuseums());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+
+
+
+
+
+
+
+// start of Account/cms related routes
+$router->post($routePrefix.'/account/login', function(){
+	$accountController = new AccountController();
+	return json_encode($accountController->login());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 

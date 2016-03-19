@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `name` varchar(64) NOT NULL,
   `email` varchar(32) NOT NULL,
   `password` text NOT NULL,
-  `type` TINYINT(11) UNSIGNED NOT NULL,
+  `typee` TINYINT(11) UNSIGNED NOT NULL,
   `accountProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

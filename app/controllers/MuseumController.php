@@ -29,6 +29,22 @@ class MuseumController
 		return $this->museumModel->getAllMuseums();
 	}
 	
+	
+	public function createMuseum() {
+		
+	}
+	
+	public function updateMuseum(){
+		
+	}
+	
+	// must do delete of all galleries and exhibits
+	public function deleteMuseum() {
+		
+	}
+	
+	
+	
 	public function deleteMessageById() {
 		$arrValues = array();
 		$arrValues['id'] = $_REQUEST['id']; // id of thing we want to delete

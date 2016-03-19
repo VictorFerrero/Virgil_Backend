@@ -13,6 +13,49 @@ class MenuModel
 	public function __destruct() {
 		$this->dbo = null;
 	}
+	
+	public function login($email, $password) {
+		$success = false;
+		$arrResult = array();	
+		$arrResult['error_message'] = array();
+		$arrResult['login'] = false;
+		$success = false;
+		 try {
+			$STH = $this->dbo->prepare("SELECT * FROM account WHERE email=:email");
+			$STH->bindParam(":email", $email);
+			$STH->execute();
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+		//	print_r($fetch);
+			if(is_array($fetch)) {
+				$hashedPassword = $fetch[0]['password'];
+				if(password_verify($password, $hashedPassword)) {
+				// username exists in the database and pw hash compare returned true
+				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
+				$arrResult['login'] = true; // the login had the correct credentials
+				// find info specific to this type of user
+				$success = true;
+			}
+			else {
+					$arrResult['error_message'][] = "invalid password";
+					$success = false;
+				}
+			}
+			else {
+				// invalid username
+				$arrResult['error_message'][] = "invalid username";
+				$success = false;
+			}
+		} catch (Exception $e) {
+			$arrResult['error'][] = $e->getMessage();
+			$success = false; // assume username is invalid if we get an exception
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	
+	
+	
+	
 	/**
 		expected input: 
 		$arrValues = array( 
