@@ -12,6 +12,7 @@ class MuseumModel
 		$this->dbo = null;
 	}
 	
+	// START of musuem related functions
 	public function getEntireMuseum($id) {
 		$arrResult = array();
 		$success = false;
@@ -59,7 +60,6 @@ class MuseumModel
 	public function getMuseums($strSearchQuery) {
 		$arrResult = array();
 		$success = false;
-
 		try {
 			$sql = "SELECT * FROM museum WHERE MATCH(museumName) AGAINST (" . "'" . $strSearchQuery . "'" . ")";
 			$STH = $this->dbo->prepare($sql);
@@ -96,11 +96,6 @@ class MuseumModel
 	public function createMuseum() {
 		$arrResult = array();
 		$success = false;
-		$accountId = $_POST['accountId'];
-		$museumName = $_POST['museumName'];
-		$address = $_POST['address'];
-		$museumProfileJSON = $_POST['museumProfileJSON'];
-
 		try {
 			$sql = "INSERT INTO museum VALUES (NULL, :accountId, :museumName,:address, :museumProfileJSON)";
 			$data = array(
@@ -116,10 +111,6 @@ class MuseumModel
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
 		}
-		$arrResult['accountId'] = $_POST['accountId'];
-		$arrResult['museumName'] = $_POST['museumName'];
-		$arrResult['address'] = $_POST['address'];
-		$arrResult['museumProfileJSON'] = $_POST['museumProfileJSON'];
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
@@ -214,6 +205,231 @@ class MuseumModel
 		}
 		$arrResult['success'] = $success;
 		return $arrResult;
+	}
+	// END of museum related functions
+
+	// START of gallery related functions
+	public function createGallery() {
+		$arrResult = array();
+		$success = false;
+		try {
+			$sql = "INSERT INTO gallery VALUES (NULL, :museumId, :name,:galleryProfileJSON)";
+			$data = array(
+				'museumId' => $_POST['museumId'],
+				'name' => $_POST['name'],
+				'galleryProfileJSON' => $_POST['galleryProfileJSON']
+				)
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'] = $STH->execute($data);
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function updateGallery() {
+		$arrResult = array();
+		$success = false;
+		 $sql = "UPDATE museum SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['museumId']) {
+			 $sql = $sql . "museumId=?, ";
+			 $data[$index] = $_POST['museumId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['name']) {
+			 $sql = $sql . "name=?, ";
+			 $data[$index] = $_POST['name'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['galleryProfileJSON']) {
+			 $sql = $sql . "galleryProfileJSON=?, ";
+			 $data[$index] = $_POST['galleryProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'] = $e->getMessage();
+			 $success = false;
+		 }	
+		 // use these for debugging
+	//	$arrResult['sql'] = $sql;
+	//	$arrResult['data'] = $data;
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function deleteGallery() {
+		$id = $_POST['id'];
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		try {
+			// delete from the gallery
+			$sql = "DELETE FROM gallery WHERE id=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// delete all the exhibits that were associated with this gallery
+			$sql = "DELETE FROM exhibit WHERE galleryId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// grab all the file paths to the images that are associated with the content
+			// that is in this museum
+			$sql = "SELECT pathToContent FROM content WHERE galleryId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
+			// go through the content array
+			foreach($content as $intIndex => $arrAssoc) {
+				$path = $arrAssoc['pathToContent'];
+				// TODO: do something to remove the image from the server
+			}
+			// delete all the content that was associated with this museum
+			$sql = "DELETE FROM content WHERE galleryId=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+			// now we should be done deleting this gallery
+			$success = true;
+		} catch (Exception $e) {
+			$success = false;
+			$arrResult['error'] = $e->getMessage();
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	// END of gallery related functions
+
+// START of exhibit related functions
+	public function createExhibit() {
+		$arrResult = array();
+		$success = false;
+		try {
+			$sql = "INSERT INTO exhibit VALUES (NULL, :galleryId, :museumId,:name, :exhibitProfileJSON)";
+			$data = array(
+				'galleryId' => $_POST['galleryId'],
+				'museumId' => $_POST['museumId'],
+				'name' => $_POST['name'],
+				'exhibitProfileJSON' => $_POST['exhibitProfileJSON']
+				)
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'] = $STH->execute($data);
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function updateExhibit() {
+		$arrResult = array();
+		$success = false;
+		 $sql = "UPDATE exhibit SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['galleryId']) {
+			 $sql = $sql . "galleryId=?, ";
+			 $data[$index] = $_POST['galleryId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['museumId']) {
+			 $sql = $sql . "museumId=?, ";
+			 $data[$index] = $_POST['museumId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['name']) {
+			 $sql = $sql . "name=?, ";
+			 $data[$index] = $_POST['name'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['exhibitProfileJSON']) {
+			 $sql = $sql . "exhibitProfileJSON=?, ";
+			 $data[$index] = $_POST['exhibitProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'] = $e->getMessage();
+			 $success = false;
+		 }	
+		 // use these for debugging
+	//	$arrResult['sql'] = $sql;
+	//	$arrResult['data'] = $data;
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function deleteExhibit() {
+		// must delete everything!!!
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		try {
+			// delete the exhibit 
+			$sql = "DELETE FROM exhibit WHERE id=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+
+			// grab all the file paths to the images that are associated with the content
+			// that is in this exhibit
+			$sql = "SELECT pathToContent FROM content WHERE exhibitId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
+			// go through the content array
+			foreach($content as $intIndex => $arrAssoc) {
+				$path = $arrAssoc['pathToContent'];
+				// TODO: do something to remove the image from the server
+			}
+			// delete all the content that was associated with this exhibit
+			$sql = "DELETE FROM content WHERE exhibitId=:id"
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+			// now we should be done deleting this museum
+			$success = true;
+		} catch (Exception $e) {
+			$success = false;
+			$arrResult['error'] = $e->getMessage();
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	// END of exhibit related function
+
+	// START of content related functions
+	public function createContent() {
+		// TODO: need to mess around with uploading images first.
+		// will need to write some test scripts so i get the hang of it
+		return "createContent funtion not implemented yet";
+	}
+
+	public function updateContent() {
+		return "updateContent funtion not implemented yet";
+	}
+
+	public function deleteContent() {
+		return "deleteContent funtion not implemented yet";
 	}
 }
 
