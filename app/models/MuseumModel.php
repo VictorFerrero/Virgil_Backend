@@ -172,12 +172,12 @@ class MuseumModel
 			$arrResult['db_result'][] = $STH->execute($data);
 
 			// delete all the galleries that were associated with this museum
-			$sql = "DELETE FROM gallery WHERE museumId=:id"
+			$sql = "DELETE FROM gallery WHERE museumId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
 			// delete all the exhibits associated with this museum
-			$sql = "DELETE FROM exhibit WHERE museumId=:id"
+			$sql = "DELETE FROM exhibit WHERE museumId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
