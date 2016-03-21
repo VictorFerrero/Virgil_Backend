@@ -42,67 +42,67 @@ $router->post($routePrefix.'museum/deleteMuseum', function(){
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 
-$router->post($routePrefix.'/account/login', function(){
+$router->post($routePrefix.'account/login', function(){
 	$accountController = new AccountController();
 	return json_encode($accountController->login());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/account/register', function(){
+$router->post($routePrefix.'account/register', function(){
 	$accountController = new AccountController();
 	return json_encode($accountController->register());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/account/updateAccount', function(){
+$router->post($routePrefix.'account/updateAccount', function(){
 	$accountController = new AccountController();
 	return json_encode($accountController->updateAccount());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/account/deleteAccount', function(){
+$router->post($routePrefix.'account/deleteAccount', function(){
 	$accountController = new AccountController();
 	return json_encode($accountController->deleteAccount());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/gallery/createGallery', function(){
+$router->post($routePrefix.'gallery/createGallery', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->createGallery());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/gallery/updateGallery', function(){
+$router->post($routePrefix.'gallery/updateGallery', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->updateGallery());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/gallery/deleteGallery', function(){
+$router->post($routePrefix.'gallery/deleteGallery', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->deleteGallery());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/exhibit/createExhibit', function(){
+$router->post($routePrefix.'exhibit/createExhibit', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->createExhibit());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/exhibit/updateExhibit', function(){
+$router->post($routePrefix.'exhibit/updateExhibit', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->updateExhibit());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/exhibit/deleteExhibit', function(){
+$router->post($routePrefix.'exhibit/deleteExhibit', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->deleteExhibit());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/content/createContent', function(){
+$router->post($routePrefix.'content/createContent', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->createContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/content/updateContent', function(){
+$router->post($routePrefix.'content/updateContent', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->updateContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'/content/deleteContent', function(){
+$router->post($routePrefix.'content/deleteContent', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->deleteContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
