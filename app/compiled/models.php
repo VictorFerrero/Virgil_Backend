@@ -117,7 +117,7 @@ class MenuModel
 			 $data[$index] = $_POST['email'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['password']) {
+		 if(isset($_POST['password'])) {
 			 $sql = $sql . "password=?, ";
 			 $hashedPassword =  password_hash($_POST['password'], PASSWORD_BCRYPT);
 			 $data[$index] = $hashedPassword;
