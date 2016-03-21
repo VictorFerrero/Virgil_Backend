@@ -264,7 +264,7 @@ class MuseumModel
 			 $success = false;
 		 }	
 		 // use these for debugging
-		$arrResult['sql'] = $sql;
+	//	$arrResult['sql'] = $sql;
 	//	$arrResult['data'] = $data;
 		$arrResult['success'] = $success;
 		return $arrResult;
@@ -317,11 +317,11 @@ class MuseumModel
 		$arrResult = array();
 		$success = false;
 		try {
-			$sql = "INSERT INTO exhibit VALUES (NULL, :galleryId, :museumId,:name, :exhibitProfileJSON)";
+			$sql = "INSERT INTO exhibit VALUES (NULL, :galleryId, :museumId,:exhibitName, :exhibitProfileJSON)";
 			$data = array(
 				'galleryId' => $_POST['galleryId'],
 				'museumId' => $_POST['museumId'],
-				'name' => $_POST['name'],
+				'exhibitName' => $_POST['exhibitName'],
 				'exhibitProfileJSON' => $_POST['exhibitProfileJSON']
 				);
 			$STH = $this->dbo->prepare($sql);
@@ -351,9 +351,9 @@ class MuseumModel
 			 $data[$index] = $_POST['museumId'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['name'])) {
-			 $sql = $sql . "name=?, ";
-			 $data[$index] = $_POST['name'];
+		 if(isset($_POST['exhibitName'])) {
+			 $sql = $sql . "exhibitName=?, ";
+			 $data[$index] = $_POST['exhibitName'];
 			 $index = $index + 1;
 		 }
 		 if(isset($_POST['exhibitProfileJSON'])) {

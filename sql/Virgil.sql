@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `exhibit` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `galleryId` int(11) UNSIGNED NOT NULL,
   `museumId` int(11) UNSIGNED NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `exhibitName` varchar(64) NOT NULL,
   `exhibitProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
