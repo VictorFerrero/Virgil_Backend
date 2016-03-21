@@ -167,7 +167,7 @@ class MuseumModel
 		$data = array('id' => $_POST['id']);
 		try {
 			// delete from the museum table
-			$sql = "DELETE FROM museum WHERE id=:id"
+			$sql = "DELETE FROM museum WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
@@ -193,7 +193,7 @@ class MuseumModel
 				// TODO: do something to remove the image from the server
 			}
 			// delete all the content that was associated with this museum
-			$sql = "DELETE FROM content WHERE museumId=:id"
+			$sql = "DELETE FROM content WHERE museumId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
@@ -277,7 +277,7 @@ class MuseumModel
 		$data = array('id' => $_POST['id']);
 		try {
 			// delete from the gallery
-			$sql = "DELETE FROM gallery WHERE id=:id"
+			$sql = "DELETE FROM gallery WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
@@ -298,7 +298,7 @@ class MuseumModel
 				// TODO: do something to remove the image from the server
 			}
 			// delete all the content that was associated with this museum
-			$sql = "DELETE FROM content WHERE galleryId=:id"
+			$sql = "DELETE FROM content WHERE galleryId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 			// now we should be done deleting this gallery
@@ -387,7 +387,7 @@ class MuseumModel
 		$data = array('id' => $_POST['id']);
 		try {
 			// delete the exhibit 
-			$sql = "DELETE FROM exhibit WHERE id=:id"
+			$sql = "DELETE FROM exhibit WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
@@ -403,7 +403,7 @@ class MuseumModel
 				// TODO: do something to remove the image from the server
 			}
 			// delete all the content that was associated with this exhibit
-			$sql = "DELETE FROM content WHERE exhibitId=:id"
+			$sql = "DELETE FROM content WHERE exhibitId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 			// now we should be done deleting this museum
