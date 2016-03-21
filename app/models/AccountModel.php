@@ -107,12 +107,12 @@ class MenuModel
 		 $sql = "UPDATE account SET ";
 		 $data = array();
 		 $index = 0;
-		 if(isset($_POST['name']) {
+		 if(isset($_POST['name'])) {
 			 $sql = $sql . "name=?, ";
 			 $data[$index] = $_POST['name'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['email']) {
+		 if(isset($_POST['email'])) {
 			 $sql = $sql . "email=?, ";
 			 $data[$index] = $_POST['email'];
 			 $index = $index + 1;

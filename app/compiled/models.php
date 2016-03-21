@@ -107,12 +107,12 @@ class MenuModel
 		 $sql = "UPDATE account SET ";
 		 $data = array();
 		 $index = 0;
-		 if(isset($_POST['name']) {
+		 if(isset($_POST['name'])) {
 			 $sql = $sql . "name=?, ";
 			 $data[$index] = $_POST['name'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['email']) {
+		 if(isset($_POST['email'])) {
 			 $sql = $sql . "email=?, ";
 			 $data[$index] = $_POST['email'];
 			 $index = $index + 1;
@@ -341,17 +341,17 @@ class MuseumModel
 		 $sql = "UPDATE museum SET ";
 		 $data = array();
 		 $index = 0;
-		 if(isset($_POST['accountId']) {
+		 if(isset($_POST['accountId'])) {
 			 $sql = $sql . "accountId=?, ";
 			 $data[$index] = $_POST['accountId'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['museumName']) {
+		 if(isset($_POST['museumName'])) {
 			 $sql = $sql . "museumName=?, ";
 			 $data[$index] = $_POST['museumName'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['address']) {
+		 if(isset($_POST['address'])) {
 			 $sql = $sql . "address=?, ";
 			 $data[$index] = $_POST['address'];
 			 $index = $index + 1;
@@ -456,17 +456,17 @@ class MuseumModel
 		 $sql = "UPDATE museum SET ";
 		 $data = array();
 		 $index = 0;
-		 if(isset($_POST['museumId']) {
+		 if(isset($_POST['museumId'])) {
 			 $sql = $sql . "museumId=?, ";
 			 $data[$index] = $_POST['museumId'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['name']) {
+		 if(isset($_POST['name'])) {
 			 $sql = $sql . "name=?, ";
 			 $data[$index] = $_POST['name'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['galleryProfileJSON']) {
+		 if(isset($_POST['galleryProfileJSON'])) {
 			 $sql = $sql . "galleryProfileJSON=?, ";
 			 $data[$index] = $_POST['galleryProfileJSON'];
 			 $index = $index + 1;
@@ -561,22 +561,22 @@ class MuseumModel
 		 $sql = "UPDATE exhibit SET ";
 		 $data = array();
 		 $index = 0;
-		 if(isset($_POST['galleryId']) {
+		 if(isset($_POST['galleryId'])) {
 			 $sql = $sql . "galleryId=?, ";
 			 $data[$index] = $_POST['galleryId'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['museumId']) {
+		 if(isset($_POST['museumId'])) {
 			 $sql = $sql . "museumId=?, ";
 			 $data[$index] = $_POST['museumId'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['name']) {
+		 if(isset($_POST['name'])) {
 			 $sql = $sql . "name=?, ";
 			 $data[$index] = $_POST['name'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['exhibitProfileJSON']) {
+		 if(isset($_POST['exhibitProfileJSON'])) {
 			 $sql = $sql . "exhibitProfileJSON=?, ";
 			 $data[$index] = $_POST['exhibitProfileJSON'];
 			 $index = $index + 1;
