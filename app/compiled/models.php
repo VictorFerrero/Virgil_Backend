@@ -484,7 +484,7 @@ class MuseumModel
 			 $success = false;
 		 }	
 		 // use these for debugging
-	//	$arrResult['sql'] = $sql;
+		$arrResult['sql'] = $sql;
 	//	$arrResult['data'] = $data;
 		$arrResult['success'] = $success;
 		return $arrResult;
