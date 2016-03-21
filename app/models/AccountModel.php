@@ -156,7 +156,6 @@ class MenuModel
 		// lets not worry about this right now. Have to deal with whether or not we delete
 		// all museums associated with the account or do we allow the option to transfer it to
 		// a different account
-
 		return "function not implemented";
 	}
 }
