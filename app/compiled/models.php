@@ -473,7 +473,7 @@ class MuseumModel
 		 }
 		 // get rid of the last two characters
 		 $sql = substr($sql,0,-2);
-		 $sql = $sql . " WHERE id=?";
+		 $sql = $sql . "  WHERE id=?";
 		 $data[$index] = $_POST['id'];
 		try {
 			 $STH = $this->dbo->prepare($sql);
