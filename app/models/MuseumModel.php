@@ -434,7 +434,7 @@ class MuseumModel
 	}
 
 	private function handleUploadedImage($museumId) {
-		$target_dir = "uploads/images/" . $museumId . "/";
+		$target_dir = "/var/www/html/Virgil_Backend/uploads/images/" . $museumId . "/";
 		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
