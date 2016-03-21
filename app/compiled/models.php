@@ -453,7 +453,7 @@ class MuseumModel
 	public function updateGallery() {
 		$arrResult = array();
 		$success = false;
-		 $sql = "UPDATE museum SET ";
+		 $sql = "UPDATE gallery SET ";
 		 $data = array();
 		 $index = 0;
 		 if(isset($_POST['museumId'])) {
@@ -473,7 +473,7 @@ class MuseumModel
 		 }
 		 // get rid of the last two characters
 		 $sql = substr($sql,0,-2);
-		 $sql = $sql . "  WHERE id=?";
+		 $sql = $sql . " WHERE id=?";
 		 $data[$index] = $_POST['id'];
 		try {
 			 $STH = $this->dbo->prepare($sql);
