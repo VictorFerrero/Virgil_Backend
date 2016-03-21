@@ -1,6 +1,7 @@
 <?php
 /*Test Functions*/
 $routePrefix = 'Virgil_Backend/index.php/';
+
 $router->get($routePrefix.'hello/{name}', function($name){
 	$str = "Hello, " . $name . "!";
 	return json_encode($str);

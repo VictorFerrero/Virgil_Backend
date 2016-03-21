@@ -213,10 +213,10 @@ class MuseumModel
 		$arrResult = array();
 		$success = false;
 		try {
-			$sql = "INSERT INTO gallery VALUES (NULL, :museumId, :name,:galleryProfileJSON)";
+			$sql = "INSERT INTO gallery VALUES (NULL, :museumId, :galleryName,:galleryProfileJSON)";
 			$data = array(
 				'museumId' => $_POST['museumId'],
-				'name' => $_POST['name'],
+				'galleryName' => $_POST['galleryName'],
 				'galleryProfileJSON' => $_POST['galleryProfileJSON']
 				);
 			$STH = $this->dbo->prepare($sql);
@@ -241,9 +241,9 @@ class MuseumModel
 			 $data[$index] = $_POST['museumId'];
 			 $index = $index + 1;
 		 }
-		 if(isset($_POST['name'])) {
-			 $sql = $sql . "name=?, ";
-			 $data[$index] = $_POST['name'];
+		 if(isset($_POST['galleryName'])) {
+			 $sql = $sql . "galleryName=?, ";
+			 $data[$index] = $_POST['galleryName'];
 			 $index = $index + 1;
 		 }
 		 if(isset($_POST['galleryProfileJSON'])) {

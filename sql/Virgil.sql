@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `museum` (
 CREATE TABLE IF NOT EXISTS `gallery` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `museumId` int(11) UNSIGNED NOT NULL,
-  `name` varchar(128) NOT NULL,
+  `galleryName` varchar(128) NOT NULL,
   `galleryProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
