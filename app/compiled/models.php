@@ -323,7 +323,7 @@ class MuseumModel
 				'museumName' => $_POST['museumName'],
 				'address' => $_POST['address'],
 				'museumProfileJSON' => $_POST['museumProfileJSON']
-				)
+				);
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'] = $STH->execute($data);
 			$success = true;
@@ -438,7 +438,7 @@ class MuseumModel
 				'museumId' => $_POST['museumId'],
 				'name' => $_POST['name'],
 				'galleryProfileJSON' => $_POST['galleryProfileJSON']
-				)
+				);
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'] = $STH->execute($data);
 			$success = true;
@@ -543,7 +543,7 @@ class MuseumModel
 				'museumId' => $_POST['museumId'],
 				'name' => $_POST['name'],
 				'exhibitProfileJSON' => $_POST['exhibitProfileJSON']
-				)
+				);
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'] = $STH->execute($data);
 			$success = true;
