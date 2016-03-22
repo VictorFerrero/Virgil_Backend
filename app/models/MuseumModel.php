@@ -418,26 +418,77 @@ class MuseumModel
 	// END of exhibit related function
 
 	// START of content related functions
+	  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `galleryId` int(11) UNSIGNED NOT NULL,
+  `exhibitId` int(11) UNSIGNED NOT NULL,
+  `museumId` int(11) UNSIGNED NOT NULL,
+  `description` text NOT NULL,
+  `pathToContent` varchar(64) NOT NULL,
+  `contentProfileJSON` text NOT NULL,
 	public function createContent() {
 		// TODO: need to mess around with uploading images first.
 		// will need to write some test scripts so i get the hang of it
-		$this->handleUploadedImage(10);
-		return "createContent funtion not implemented yet";
+		$museumId = $_POST['museumId'];
+		$success = false;
+		$arrResult = $this->handleUploadedImage($museumId);
+		// check to see if image upload worked
+		if($arrResult['success'] == true) {
+			// grab the path to content for the database
+			$pathToContent = $arrResult['pathToContent'];
+			// now we will add this record to the db
+			try {
+				$sql = "INSERT INTO content VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :pathToContent, :contentProfileJSON)";
+				$data = array(
+					'galleryId' => $_POST['galleryId'],
+					'exhibitId' => $_POST['exhibitId'],
+					'museumId' => $_POST['museumId'],
+					'description' => $_POST['description'],
+					'pathToContent' => $pathToContent,
+					'contentProfileJSON' => $_POST['contentProfileJSON']
+					);
+				$STH = $this->dbo->prepare($sql);
+				$arrResult['db_result'] = $STH->execute($data);
+				$success = true;
+			} catch(Exception $e) {
+				$arrResult['error'] = $e->getMessage();
+				$success = false;
+			}
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
 	}
 
 	public function updateContent() {
+		$arrResult = array();
+		$success = false;
+		$newPathToContent = "";
+		if(isset($_FILES["imageToUpload"]["name"])) {
+			// content update contains a new image to upload
+			$arr = $this->handleUploadedImage($_POST['museumId']);
+			if($arr['success'] == true) {
+				$newPathToContent = $arr['pathToContent'];
+			}
+			else {
+				$success = false;
+			}
+		}
 		return "updateContent funtion not implemented yet";
 	}
 
 	public function deleteContent() {
+		// remove the image from Virgil_Uploads
+		
+		// delete the record
 		return "deleteContent funtion not implemented yet";
 	}
 
 	private function handleUploadedImage($museumId) {
 		$target_dir = "/var/www/html/Virgil_Uploads/images/" . $museumId . "/";
 		$target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);
+		$pathToContent = $museumId . "/" . basename($_FILES["imageToUpload"]["name"]);
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+		$arrResult = array('error' => array());
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
 		}
@@ -450,18 +501,21 @@ class MuseumModel
 		    } 
 		    else {
 		        echo "File is not an image.";
+		        $arrResult['error'][] = "File is not an image";
 		        $uploadOk = 0;
 		    }
 		}
 		// Check if file already exists
 		if (file_exists($target_file)) {
-		   // echo "Sorry, file already exists.";
+		   echo "Sorry, file already exists.";
+		   $arrResult['error'][] = "File already exists";
 		    $uploadOk = 0;
 		}
 		// Check file size
 		/*
 		if ($_FILES["imageToUpload"]["size"] > 500000) {
 		  //  echo "Sorry, your file is too large.";
+		  $arrResult['error'][] = "the file is too large";
 		    $uploadOk = 0;
 		}
 		*/
@@ -470,26 +524,31 @@ class MuseumModel
 		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
 		&& $imageFileType != "gif" ) {
 		 //   echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+		 $arrResult['error'][] = "image format not supported";
 		    $uploadOk = 0;
 		}
 		*/
 		// Check if $uploadOk is set to 0 by an error
 		if ($uploadOk == 0) {
 		    echo "Sorry, your file was not uploaded.";
+		    $arrResult['error'][] = "You file was not uploaded";
 		    $success = false;
 		// if everything is ok, try to upload file
 		} 
 		else {
 		    if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], $target_file)) {
-		        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+		        echo "The file ". basename( $_FILES["imageToUpload"]["name"]). " has been uploaded.";
 		    	$success = true;
 		    } 
 		    else {
-		       echo "Sorry, there was an error uploading your file.";
+		        echo "Sorry, there was an error uploading your file.";
+		        $arrResult['error'][] = "Sorry, there was an error uploading your file.";
 		    	$success = false;
 		    }
 		}
-		return $success;
+		$arrResult['pathToContent'] = $pathToContent;
+		$arrResult['success'] = $success;
+		return $arrResult;
 	}
 }
 
