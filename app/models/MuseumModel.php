@@ -460,26 +460,110 @@ class MuseumModel
 
 	public function updateContent() {
 		$arrResult = array();
+		$arr = array(); // tmp variable used for getting response from handleImageUpload
 		$success = false;
 		$newPathToContent = "";
-		if(isset($_FILES["imageToUpload"]["name"])) {
-			// content update contains a new image to upload
-			$arr = $this->handleUploadedImage($_POST['museumId']);
-			if($arr['success'] == true) {
-				$newPathToContent = $arr['pathToContent'];
-			}
-			else {
+		$oldPathToContent = "";
+		// get the path to the content that is currently in the db, only do that if update contains new image
+		if(isset($_FILES['imageToUpload']['name'])) {
+			try {
+				$sql = "SELECT pathToContent FROM content WHERE id=:id";
+				$STH = $this->dbo->prepare($sql);
+				$STH->bindParam(":id", $_POST['id']);
+				$res = $STH->execute();
+				$oldPathToContent = $res['pathToContent'];
+				$success = true;
+			} catch(Exception $e) {
+				$arrResult['error'][] = $e->getMessage();
 				$success = false;
 			}
 		}
-		return "updateContent funtion not implemented yet";
+		// we were able to grab the location of the old content
+		if ($success == true) {
+			// see if there is a file pending upload
+			if(isset($_FILES["imageToUpload"]["name"])) {
+				// handle the image: store it in proper directory, make directory path
+				$arr = $this->handleUploadedImage($_POST['museumId']);
+				if($arr['success'] == true) {
+					$newPathToContent = $arr['pathToContent'];
+					$pathToDelete = "/var/www/html/Virgil_Uploads/" . $oldPathToContent;
+					unlink($pathToDelete);
+				}
+				else {
+					$success = false;
+				}
+			}
+		}
+		// now we proceed with routine update
+		 $sql = "UPDATE content SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['galleryId'])) {
+			 $sql = $sql . "galleryId=?, ";
+			 $data[$index] = $_POST['galleryId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['exhibitId'])) {
+			 $sql = $sql . "exhibitId=?, ";
+			 $data[$index] = $_POST['exhibitId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['museumId'])) {
+			 $sql = $sql . "museumId=?, ";
+			 $data[$index] = $_POST['museumId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['description'])) {
+			 $sql = $sql . "description=?, ";
+			 $data[$index] = $_POST['description'];
+			 $index = $index + 1;
+		 }
+		 if(strcmp($newPathToContent, "") != 0) {
+			 $sql = $sql . "pathToContent=?, ";
+			 $data[$index] = $newPathToContent;
+			 $index = $index + 1;
+		 } 
+		 if(isset($_POST['contentProfileJSON'])) {
+			 $sql = $sql . "contentProfileJSON=?, ";
+			 $data[$index] = $_POST['contentProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'][] = $e->getMessage();
+			 $success = false;
+		 }	
+		return $arrResult;
 	}
 
 	public function deleteContent() {
-		// remove the image from Virgil_Uploads
-		
-		// delete the record
-		return "deleteContent funtion not implemented yet";
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		// first lets delete the content image from directory
+		try {
+			$sql = "SELECT pathToContent FROM content WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$res = $STH->execute($data);
+			unlink($res['pathToContent']);
+
+			$sql = "DELETE FROM content WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
 	}
 
 	private function handleUploadedImage($museumId) {
@@ -489,6 +573,7 @@ class MuseumModel
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 		$arrResult = array('error' => array());
+		// if there is no directory for this museum, then create it
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
 		}
