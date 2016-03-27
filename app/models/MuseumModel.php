@@ -475,7 +475,7 @@ class MuseumModel
 				$STH->execute();
 				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
 				$oldPathToContent = $fetch['pathToContent'];
-				echo "oldPathToContent: " . $oldPathToContent;
+				echo "oldPathToContent:" . $oldPathToContent;
 				$success = true;
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
@@ -488,15 +488,16 @@ class MuseumModel
 			if(isset($_FILES["imageToUpload"]["name"])) {
 				// handle the image: store it in proper directory, make directory path
 				$arr = $this->handleUploadedImage($_POST['museumId']);
+				$arrResult['debug'] = $arr;
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;
+						echo "PATH TO DELETE"  . $pathToDelete;
 					if(is_dir($pathToDelete)) {
 						// some content might not have an image associated with it. Lets make
 						// sure we dont try to delete something that isnt there
 						echo "dshfldjgkasdjgkdsagdsg";
 						echo "UNLINK VALUE: " . unlink($pathToDelete);
-						echo " PATH TO DELETE"  . $pathToDelete;
 					}
 				}
 				else {
