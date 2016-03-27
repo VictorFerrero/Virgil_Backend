@@ -638,20 +638,22 @@ class MuseumModel
 	// END of exhibit related function
 
 	// START of content related functions
-	  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `galleryId` int(11) UNSIGNED NOT NULL,
-  `exhibitId` int(11) UNSIGNED NOT NULL,
-  `museumId` int(11) UNSIGNED NOT NULL,
-  `description` text NOT NULL,
-  `pathToContent` varchar(64) NOT NULL,
-  `contentProfileJSON` text NOT NULL,
 	public function createContent() {
 		// TODO: need to mess around with uploading images first.
 		// will need to write some test scripts so i get the hang of it
 		$museumId = $_POST['museumId'];
 		$success = false;
-		$arrResult = $this->handleUploadedImage($museumId);
-		// check to see if image upload worked
+		$arrResult = array();
+		if(isset($_POST['hasImage']) {
+			$arrResult = $this->handleUploadedImage($museumId);
+		}
+		else {
+			// no image for the content. we will store "noImage"
+			$arrResult['success'] = true;
+			$arrResult['pathToContent'] = "noImage";
+		}
+		// check to see if image upload worked. If there is no image then we still do
+		// the insert, we just add content that has no image
 		if($arrResult['success'] == true) {
 			// grab the path to content for the database
 			$pathToContent = $arrResult['pathToContent'];
@@ -680,26 +682,114 @@ class MuseumModel
 
 	public function updateContent() {
 		$arrResult = array();
+		$arr = array(); // tmp variable used for getting response from handleImageUpload
 		$success = false;
 		$newPathToContent = "";
-		if(isset($_FILES["imageToUpload"]["name"])) {
-			// content update contains a new image to upload
-			$arr = $this->handleUploadedImage($_POST['museumId']);
-			if($arr['success'] == true) {
-				$newPathToContent = $arr['pathToContent'];
-			}
-			else {
+		$oldPathToContent = "";
+		// get the path to the content that is currently in the db, only do that if update contains new image
+		if(isset($_FILES['imageToUpload']['name'])) {
+			try {
+				$sql = "SELECT pathToContent FROM content WHERE id=:id";
+				$STH = $this->dbo->prepare($sql);
+				$STH->bindParam(":id", $_POST['id']);
+				$res = $STH->execute();
+				$oldPathToContent = $res['pathToContent'];
+				$success = true;
+			} catch(Exception $e) {
+				$arrResult['error'][] = $e->getMessage();
 				$success = false;
 			}
 		}
-		return "updateContent funtion not implemented yet";
+		// we were able to grab the location of the old content
+		if ($success == true) {
+			// see if there is a file pending upload
+			if(isset($_FILES["imageToUpload"]["name"])) {
+				// handle the image: store it in proper directory, make directory path
+				$arr = $this->handleUploadedImage($_POST['museumId']);
+				if($arr['success'] == true) {
+					$newPathToContent = $arr['pathToContent'];
+					$pathToDelete = "/var/www/html/Virgil_Uploads/" . $oldPathToContent;
+					if(is_dir($pathToDelete)) {
+						// some content might not have an image associated with it. Lets make
+						// sure we dont try to delete something that isnt there
+						unlink($pathToDelete);
+					}
+				}
+				else {
+					$success = false;
+				}
+			}
+		}
+		// now we proceed with routine update
+		 $sql = "UPDATE content SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['galleryId'])) {
+			 $sql = $sql . "galleryId=?, ";
+			 $data[$index] = $_POST['galleryId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['exhibitId'])) {
+			 $sql = $sql . "exhibitId=?, ";
+			 $data[$index] = $_POST['exhibitId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['museumId'])) {
+			 $sql = $sql . "museumId=?, ";
+			 $data[$index] = $_POST['museumId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['description'])) {
+			 $sql = $sql . "description=?, ";
+			 $data[$index] = $_POST['description'];
+			 $index = $index + 1;
+		 }
+		 if(strcmp($newPathToContent, "") != 0) {
+		 // $newPathToContent will get set if a file upload happens above	
+			 $sql = $sql . "pathToContent=?, ";
+			 $data[$index] = $newPathToContent;
+			 $index = $index + 1;
+		 } 
+		 if(isset($_POST['contentProfileJSON'])) {
+			 $sql = $sql . "contentProfileJSON=?, ";
+			 $data[$index] = $_POST['contentProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'][] = $e->getMessage();
+			 $success = false;
+		 }	
+		return $arrResult;
 	}
 
 	public function deleteContent() {
-		// remove the image from Virgil_Uploads
-		
-		// delete the record
-		return "deleteContent funtion not implemented yet";
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		// first lets delete the content image from directory
+		try {
+			$sql = "SELECT pathToContent FROM content WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$res = $STH->execute($data);
+			unlink($res['pathToContent']);
+			$sql = "DELETE FROM content WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
 	}
 
 	private function handleUploadedImage($museumId) {
@@ -709,6 +799,7 @@ class MuseumModel
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 		$arrResult = array('error' => array());
+		// if there is no directory for this museum, then create it
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
 		}
@@ -731,7 +822,7 @@ class MuseumModel
 		   $arrResult['error'][] = "File already exists";
 		    $uploadOk = 0;
 		}
-		// Check file size
+		// Check file size. handle this client side
 		/*
 		if ($_FILES["imageToUpload"]["size"] > 500000) {
 		  //  echo "Sorry, your file is too large.";
@@ -739,7 +830,7 @@ class MuseumModel
 		    $uploadOk = 0;
 		}
 		*/
-		// Allow certain file formats
+		// Allow certain file formats. handle this client side
 		/*
 		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
 		&& $imageFileType != "gif" ) {

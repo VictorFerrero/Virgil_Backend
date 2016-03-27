@@ -418,20 +418,22 @@ class MuseumModel
 	// END of exhibit related function
 
 	// START of content related functions
-	  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `galleryId` int(11) UNSIGNED NOT NULL,
-  `exhibitId` int(11) UNSIGNED NOT NULL,
-  `museumId` int(11) UNSIGNED NOT NULL,
-  `description` text NOT NULL,
-  `pathToContent` varchar(64) NOT NULL,
-  `contentProfileJSON` text NOT NULL,
 	public function createContent() {
 		// TODO: need to mess around with uploading images first.
 		// will need to write some test scripts so i get the hang of it
 		$museumId = $_POST['museumId'];
 		$success = false;
-		$arrResult = $this->handleUploadedImage($museumId);
-		// check to see if image upload worked
+		$arrResult = array();
+		if(isset($_POST['hasImage']) {
+			$arrResult = $this->handleUploadedImage($museumId);
+		}
+		else {
+			// no image for the content. we will store "noImage"
+			$arrResult['success'] = true;
+			$arrResult['pathToContent'] = "noImage";
+		}
+		// check to see if image upload worked. If there is no image then we still do
+		// the insert, we just add content that has no image
 		if($arrResult['success'] == true) {
 			// grab the path to content for the database
 			$pathToContent = $arrResult['pathToContent'];
@@ -487,7 +489,11 @@ class MuseumModel
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/" . $oldPathToContent;
-					unlink($pathToDelete);
+					if(is_dir($pathToDelete)) {
+						// some content might not have an image associated with it. Lets make
+						// sure we dont try to delete something that isnt there
+						unlink($pathToDelete);
+					}
 				}
 				else {
 					$success = false;
@@ -519,6 +525,7 @@ class MuseumModel
 			 $index = $index + 1;
 		 }
 		 if(strcmp($newPathToContent, "") != 0) {
+		 // $newPathToContent will get set if a file upload happens above	
 			 $sql = $sql . "pathToContent=?, ";
 			 $data[$index] = $newPathToContent;
 			 $index = $index + 1;
@@ -553,7 +560,6 @@ class MuseumModel
 			$STH = $this->dbo->prepare($sql);
 			$res = $STH->execute($data);
 			unlink($res['pathToContent']);
-
 			$sql = "DELETE FROM content WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
@@ -596,7 +602,7 @@ class MuseumModel
 		   $arrResult['error'][] = "File already exists";
 		    $uploadOk = 0;
 		}
-		// Check file size
+		// Check file size. handle this client side
 		/*
 		if ($_FILES["imageToUpload"]["size"] > 500000) {
 		  //  echo "Sorry, your file is too large.";
@@ -604,7 +610,7 @@ class MuseumModel
 		    $uploadOk = 0;
 		}
 		*/
-		// Allow certain file formats
+		// Allow certain file formats. handle this client side
 		/*
 		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
 		&& $imageFileType != "gif" ) {
