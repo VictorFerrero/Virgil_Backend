@@ -775,7 +775,7 @@ class MuseumModel
 		$arrResult = array('db_result' => array());
 		$success = false;
 		$data = array('id' => $_POST['id']);
-		$basePath = "/var/www/html/Virgil_Uploads/images/"
+		$basePath = "/var/www/html/Virgil_Uploads/images/";
 		// first lets delete the content image from directory
 		try {
 			$sql = "SELECT pathToContent FROM content WHERE id=:id";
