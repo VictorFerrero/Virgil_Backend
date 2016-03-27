@@ -696,7 +696,6 @@ class MuseumModel
 				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
 				$oldPathToContent = $fetch['pathToContent'];
 				echo "oldPathToContent: " . $oldPathToContent;
-				print_r($res);
 				$success = true;
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
