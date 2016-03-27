@@ -708,7 +708,7 @@ class MuseumModel
 				$arr = $this->handleUploadedImage($_POST['museumId']);
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
-					$pathToDelete = "/var/www/html/Virgil_Uploads/" . $oldPathToContent;
+					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;
 					if(is_dir($pathToDelete)) {
 						// some content might not have an image associated with it. Lets make
 						// sure we dont try to delete something that isnt there
@@ -802,7 +802,6 @@ class MuseumModel
 		// if there is no directory for this museum, then create it
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
-   			 chmod($target_dir, 0777);
 		}
 		// Check if image file is a actual image or fake image
 		if(isset($_POST["submit"])) {
