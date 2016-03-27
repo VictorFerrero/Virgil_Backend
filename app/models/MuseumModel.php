@@ -492,6 +492,7 @@ class MuseumModel
 					if(is_dir($pathToDelete)) {
 						// some content might not have an image associated with it. Lets make
 						// sure we dont try to delete something that isnt there
+						echo "dshfldjgkasdjgkdsagdsg";
 						unlink($pathToDelete);
 					}
 				}
@@ -554,12 +555,13 @@ class MuseumModel
 		$arrResult = array('db_result' => array());
 		$success = false;
 		$data = array('id' => $_POST['id']);
+		$basePath = "/var/www/html/Virgil_Uploads/images/"
 		// first lets delete the content image from directory
 		try {
 			$sql = "SELECT pathToContent FROM content WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$res = $STH->execute($data);
-			unlink($res['pathToContent']);
+			unlink($basePath . $res['pathToContent']);
 			$sql = "DELETE FROM content WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
