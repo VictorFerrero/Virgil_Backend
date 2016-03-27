@@ -694,6 +694,8 @@ class MuseumModel
 				$STH->bindParam(":id", $_POST['id']);
 				$res = $STH->execute();
 				$oldPathToContent = $res['pathToContent'];
+				echo "oldPathToContent: " . $oldPathToContent;
+				print_r($res);
 				$success = true;
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
