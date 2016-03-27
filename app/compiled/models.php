@@ -713,7 +713,8 @@ class MuseumModel
 						// some content might not have an image associated with it. Lets make
 						// sure we dont try to delete something that isnt there
 						echo "dshfldjgkasdjgkdsagdsg";
-						unlink($pathToDelete);
+						echo "UNLINK VALUE: " . unlink($pathToDelete);
+						echo " PATH TO DELETE"  . $pathToDelete;
 					}
 				}
 				else {
