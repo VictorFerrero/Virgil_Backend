@@ -692,8 +692,9 @@ class MuseumModel
 				$sql = "SELECT pathToContent FROM content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
 				$STH->bindParam(":id", $_POST['id']);
-				$res = $STH->execute();
-				$oldPathToContent = $res['pathToContent'];
+				$STH->execute();
+				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+				$oldPathToContent = $fetch['pathToContent'];
 				echo "oldPathToContent: " . $oldPathToContent;
 				print_r($res);
 				$success = true;
@@ -783,8 +784,9 @@ class MuseumModel
 		try {
 			$sql = "SELECT pathToContent FROM content WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
-			$res = $STH->execute($data);
-			unlink($basePath . $res['pathToContent']);
+			$STH->execute($data);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+			unlink($basePath . $fetch['pathToContent']);
 			$sql = "DELETE FROM content WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
