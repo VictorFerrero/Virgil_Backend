@@ -424,7 +424,7 @@ class MuseumModel
 		$museumId = $_POST['museumId'];
 		$success = false;
 		$arrResult = array();
-		if(isset($_POST['hasImage']) {
+		if(isset($_POST['hasImage'])) {
 			$arrResult = $this->handleUploadedImage($museumId);
 		}
 		else {
