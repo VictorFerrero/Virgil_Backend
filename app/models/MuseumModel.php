@@ -582,6 +582,7 @@ class MuseumModel
 		// if there is no directory for this museum, then create it
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
+   			 chmod($target_dir, 0777);
 		}
 		// Check if image file is a actual image or fake image
 		if(isset($_POST["submit"])) {
@@ -628,6 +629,7 @@ class MuseumModel
 		} 
 		else {
 		    if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], $target_file)) {
+		    	chmod($target_file, 0777);
 		        echo "The file ". basename( $_FILES["imageToUpload"]["name"]). " has been uploaded.";
 		    	$success = true;
 		    } 
