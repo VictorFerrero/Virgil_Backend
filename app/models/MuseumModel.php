@@ -493,7 +493,8 @@ class MuseumModel
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;
 						echo "PATH TO DELETE"  . $pathToDelete;
-					if(is_dir($pathToDelete)) {
+						$dir = "/var/www/html/Virgil_Uploads/images/" . $_POST['museumId'];
+					if(is_dir($dir)) {
 						// some content might not have an image associated with it. Lets make
 						// sure we dont try to delete something that isnt there
 						echo "dshfldjgkasdjgkdsagdsg";
