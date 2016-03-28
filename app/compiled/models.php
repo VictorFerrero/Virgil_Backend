@@ -806,7 +806,6 @@ class MuseumModel
 		$arrResult = array();
 		$start = date("Y-m-d H:i:s", strtotime($_POST['startTime']));
 		$end = date("Y-m-d H:i:s", strtotime($_POST['endTime']));
-		echo $start . "<br>" . $end;
 			try {
 				$sql = "INSERT INTO events VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :startTime, :endTime, :eventProfileJSON)";
 				$data = array(
@@ -856,13 +855,15 @@ class MuseumModel
 			 $index = $index + 1;
 		 }
 		 if(isset($_POST['startTime'])) {
+		 	 $start = date("Y-m-d H:i:s", strtotime($_POST['startTime']));
 			 $sql = $sql . "startTime=?, ";
-			 $data[$index] = strtotime($_POST['startTime']);
+			 $data[$index] = $start;
 			 $index = $index + 1;
 		 }
 		 if(isset($_POST['endTime'])) {
+		 	 $end = date("Y-m-d H:i:s", strtotime($_POST['endTime']));
 			 $sql = $sql . "endTime=?, ";
-			 $data[$index] = strtotime($_POST['endTime']);
+			 $data[$index] = $end;
 			 $index = $index + 1;
 		 }
 		 if(isset($_POST['eventProfileJSON'])) {
