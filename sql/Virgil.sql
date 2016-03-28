@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `name` varchar(64) NOT NULL,
   `email` varchar(32) NOT NULL,
   `password` text NOT NULL,
-  `type` TINYINT(11) UNSIGNED NOT NULL,
+  `typee` TINYINT(11) UNSIGNED NOT NULL,
   `accountProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `museum` (
 CREATE TABLE IF NOT EXISTS `gallery` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `museumId` int(11) UNSIGNED NOT NULL,
-  `name` varchar(128) NOT NULL,
+  `galleryName` varchar(128) NOT NULL,
   `galleryProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `exhibit` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `galleryId` int(11) UNSIGNED NOT NULL,
   `museumId` int(11) UNSIGNED NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `exhibitName` varchar(64) NOT NULL,
   `exhibitProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -121,6 +121,23 @@ CREATE TABLE IF NOT EXISTS `loginHistory` (
   `timestampp` timestamp NOT NULL,
   `ip` varchar(64) NOT NULL,
   `loginProfileJSON` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+
+--
+-- Table structure for table `Content`
+
+CREATE TABLE IF NOT EXISTS `events` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `galleryId` int(11) UNSIGNED NOT NULL,
+  `exhibitId` int(11) UNSIGNED NOT NULL,
+  `museumId` int(11) UNSIGNED NOT NULL,
+  `description` text NOT NULL,
+  `startTime` datetime NOT NULL,
+  `endTime` datetime NOT NULL,
+  `eventProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

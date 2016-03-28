@@ -11,7 +11,8 @@ class MuseumController
 	public function __destruct() {
 		$this->museumModel = null;
 	}
-	
+
+// START museum related functions	
 	public function getEntireMuseum() {
 		$arrValues = array();
 		$id = $_REQUEST['id'];
@@ -19,44 +20,88 @@ class MuseumController
 		$arrResult = $this->museumModel->getEntireMuseum($id);
 		return $arrResult;
 	}
-	
-	public function deleteMessageById() {
-		$arrValues = array();
-		$arrValues['id'] = $_REQUEST['id']; // id of thing we want to delete
-		$arrValues['where_clause'] = "id=:id"; // where clause specifying what condition is to delete
-		$arrResult = $this->feedModel->deleteMessage($arrValues);
+
+	public function getMuseums($strSearchQuery) {
+		$arrResult = $this->museumModel->getMuseums($strSearchQuery);
 		return $arrResult;
 	}
 	
-	// -1 means the message is TO everyone
-	public function getMessagesBySenderId() {
-		$arrValues = array();
-		$arrValues['id'] = $_REQUEST['senderId'];
-		$arrValues['where_clause'] = "sender=:id";
-		$arrResult = $this->feedModel->getMessages($arrValues);
-		
-		$arrMessages = $arrResult['data'];
-		return $arrResult;
+	public function getAllMuseums() {
+		return ($this->museumModel->getAllMuseums());
 	}
 	
-	public function getMessagesByReceiverId() {
-		$arrValues = array();
-		$arrValues['id'] = $_REQUEST['receiverId'];
-		$arrValues['where_clause'] = "receiver=:id";
-		$arrResult = $this->feedModel->getMessages($arrValues);
-		
-		$arrMessages = $arrResult['data'];
-		return $arrResult;
+	
+	public function createMuseum() {
+		return ($this->museumModel->createMuseum());
 	}
 	
-	public function getMessagesById() {
-		$arrValues = array();
-		$arrValues['id'] = $_REQUEST['id'];
-		$arrValues['where_clause'] = "id=:id";
-		$arrResult = $this->feedModel->getMessages($arrValues);
-		
-		$arrMessages = $arrResult['data'];
-		return $arrResult;
+	public function updateMuseum(){
+		return ($this->museumModel->updateMuseum());
+	}
+	
+	// must do delete of all galleries and exhibits
+	public function deleteMuseum() {
+		return ($this->museumModel->deleteMuseum());
+	}
+	// END of museum related functions
+
+	// START of gallery related functions 
+	public function createGallery() {
+		return ($this->museumModel->createGallery());
+	}
+
+	public function updateGallery() {
+		return ($this->museumModel->updateGallery());
+	}
+
+	public function deleteGallery() {
+		return ($this->museumModel->deleteGallery());
+	}
+	// END of gallery related functions
+
+	// START of exhibit related functions
+	public function createExhibit() {
+		return ($this->museumModel->createExhibit());
+	}
+
+	public function updateExhibit() {
+		return ($this->museumModel->updateExhibit());
+	}
+
+	public function deleteExhibit() {
+		return ($this->museumModel->deleteExhibit());
+	}
+	// END of exhibit related functions
+
+	// START of content related functions
+	public function createContent() {
+		return ($this->museumModel->createContent());
+	}
+
+	public function updateContent() {
+		return ($this->museumModel->updateContent());
+	}
+
+	public function deleteContent(){
+		return ($this->museumModel->deleteContent());
+	}
+	// END of content related functions
+
+	// START of Event related functions
+	public function createEvent() {
+		return ($this->museumModel->createEvent());
+	}
+
+	public function updateEvent() {
+		return ($this->museumModel->updateEvent());
+	}	
+
+	public function deleteEvent() {
+		return ($this->museumModel->deleteEvent());
+	}
+
+	public function getEventsForMuseum() {
+		return ($this->museumModel->getEventsForMuseum());
 	}
 }
 ?>

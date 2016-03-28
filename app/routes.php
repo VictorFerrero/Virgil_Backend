@@ -1,187 +1,130 @@
 <?php
 /*Test Functions*/
 $routePrefix = 'Virgil_Backend/index.php/';
+
 $router->get($routePrefix.'hello/{name}', function($name){
 	$str = "Hello, " . $name . "!";
 	return json_encode($str);
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
+
+// start of routes for the mobile app
 $router->get($routePrefix.'getEntireMuseum/{id}', function($id){
 	$museumController = new MuseumController();
 	$_REQUEST['id'] = $id;
-	return json_encode($museumController->getEntireMuseum($id));
+	return json_encode($museumController->getEntireMuseum());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->get($routePrefix.'getMuseums/{queryString}', function($queryString){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getMuseums($queryString));
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->get($routePrefix.'getAllMuseums', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getAllMuseums());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 
-/*Webservice Functions*/
-// start UserController
-$router->post($routePrefix.'user/isUserInOrg', function(){
-	$UserController = new UserController();
-	return json_encode($UserController->isUserInOrg());
+// start of cms related routes
+$router->post($routePrefix.'museum/createMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createMuseum());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'user/login', function(){
-	$UserController = new UserController();
-	return json_encode($UserController->login());
+$router->post($routePrefix.'museum/updateMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateMuseum());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'user/logout', function(){
-	$UserController = new UserController();
-	return json_encode($UserController->logout());
+$router->post($routePrefix.'museum/deleteMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteMuseum());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'user/getAllUsers', function(){
-	$UserController = new UserController();
-	return json_encode($UserController->getAllUsers());
+
+$router->post($routePrefix.'account/login', function(){
+	$accountController = new AccountController();
+	return json_encode($accountController->login());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'user/register', function(){
-	$UserController = new UserController();
-	return json_encode($UserController->register());
+$router->post($routePrefix.'account/register', function(){
+	$accountController = new AccountController();
+	return json_encode($accountController->register());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'user/deleteUser', function(){
-	$UserController = new UserController();
-	return json_encode($UserController->deleteUser());
+$router->post($routePrefix.'account/updateAccount', function(){
+	$accountController = new AccountController();
+	return json_encode($accountController->updateAccount());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-// Start FeedController
-$router->post($routePrefix.'feed/addMessage', function(){
-	$FeedController = new FeedController();
-	return json_encode($FeedController->addMessage());
+$router->post($routePrefix.'account/deleteAccount', function(){
+	$accountController = new AccountController();
+	return json_encode($accountController->deleteAccount());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'feed/deleteMessageById', function(){
-	$FeedController = new FeedController();
-	return json_encode($FeedController->deleteMessageById());
+$router->post($routePrefix.'gallery/createGallery', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createGallery());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'feed/getMessagesBySenderId', function(){
-	$FeedController = new FeedController();
-	return json_encode($FeedController->getMessagesBySenderId());
+$router->post($routePrefix.'gallery/updateGallery', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateGallery());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'feed/getMessagesByReceiverId', function(){
-	$FeedController = new FeedController();
-	return json_encode($FeedController->getMessagesByReceiverId());
+$router->post($routePrefix.'gallery/deleteGallery', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteGallery());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'feed/getMessagesById', function(){
-	$FeedController = new FeedController();
-	return json_encode($FeedController->getMessagesById());
+$router->post($routePrefix.'exhibit/createExhibit', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createExhibit());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-// Start Org Controller
-$router->post($routePrefix.'org/createOrg', function(){
-	$OrgController = new OrgController();
-	return json_encode($OrgController->createOrg());
+$router->post($routePrefix.'exhibit/updateExhibit', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateExhibit());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'org/editOrg', function(){
-	$OrgController = new OrgController();
-	return json_encode($OrgController->editOrg());
+$router->post($routePrefix.'exhibit/deleteExhibit', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteExhibit());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'org/deleteOrg', function(){
-	$OrgController = new OrgController();
-	return json_encode($OrgController->deleteOrg());
+$router->post($routePrefix.'content/createContent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'org/getOrgById', function(){
-	$OrgController = new OrgController();
-	return json_encode($OrgController->getOrgById());
+$router->post($routePrefix.'content/updateContent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-// Start Menu Controller
-$router->post($routePrefix.'menu/createMenu', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->createMenu());
+$router->post($routePrefix.'content/deleteContent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'menu/editMenu', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->editMenu());
+$router->post($routePrefix.'events/createEvent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createEvent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'menu/deleteMenu', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->deleteMenu());
+$router->post($routePrefix.'events/updateEvent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateEvent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'menu/createMenuItem', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->createMenuItem());
+$router->post($routePrefix.'events/deleteEvent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteEvent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'menu/deleteMenuItem', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->deleteMenuItem());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'menu/editMenuItem', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->editMenuItem());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'menu/createFeedback', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->createFeedback());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'menu/deleteFeedback', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->deleteFeedback());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'menu/editFeedback', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->editFeedback());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'menu/getFeedbackForMenu', function(){
-	$MenuController = new MenuController();
-	return json_encode($MenuController->getFeedbackForMenu());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-/*End Webservice Functions*/
-/*BaaS - Main Reflective Functions*/
-//SELECT and SELECT-like API calls
-/*
-Simple select
-by pname=value, or SELECT ALL if * in pvalue (pname disregarded but required)
-	i.e. get/table/field1/value1 retrieves the record(s) in table where field1=value1
-	i.e. get/users/id/1 retrieves the user with id=1
-	i.e. get/users/id/* retrieves the users regardless of id (as in, all users)
-	can specify operand to act on field1 and value1, like in filter, except in request param 'operand' since only one filter
-*/
-$router->get($routePrefix.'get/{table}/{pname}/{pvalue}', function(){
-	return Test::getIndex();
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-/*
-Comprehensive select
-each filter in filterArr is pname:pvalue:operand (optional)
-	i.e. id:5 for getting a single table row by id, if operand is included (= > < <= >=), applies to id and 5.
-	i.e. status:1 for getting all rows with status of 1, same as status:1:=. status:1:> returns all rows with status > 1
-	i.e. id:* or anything:* means select and return all rows, operand disregarded
-*/
-$router->get($routePrefix.'get/{table}/{filterArr}', function(){
-	return Test::getIndex();
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-//INSERT/UPDATE and INSERT/UPDATE-like API calls
-/*
-Simple insert/update
-	inserts or updates row in table with attributes objectArr
-	if identifier in objectArr exists in table, update existing row with values in objectArr
-	if not, insert new row with values in objectArr and auto-generated identifier
-*/
-$router->post($routePrefix.'post/{table}/{objectArr}', function(){
-	return Test::getIndex();
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-//DELETE and DELETE-like API calls
-/*
-Simple Delete
-	deletes row in table by id
-*/
-$router->delete($routePrefix.'delete/{table}/{id}', function(){
-	return Test::getIndex();
+$router->post($routePrefix.'events/getEventsForMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getEventsForMuseum());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 ?>
