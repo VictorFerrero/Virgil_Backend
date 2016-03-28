@@ -584,9 +584,9 @@ class MuseumModel
 	public function createEvent() {
 		$success = false;
 		$arrResult = array();
-		$start = date(strtotime($_POST['startTime']));
-		$end = date(strtotime($_POST['endTime']));
-		echo $start . " " . $end;
+		$start = date("Y-m-d H:i:s", strtotime($_POST['startTime']));
+		$end = date("Y-m-d H:i:s", strtotime($_POST['endTime']));
+		echo $start . "<br>" . $end;
 			try {
 				$sql = "INSERT INTO events VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :startTime, :endTime, :eventProfileJSON)";
 				$data = array(
