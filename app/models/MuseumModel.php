@@ -584,8 +584,9 @@ class MuseumModel
 	public function createEvent() {
 		$success = false;
 		$arrResult = array();
-		echo strtotime($_POST['startTime']);
-		echo strtotime($_POST['endTime']);
+		$start = date("YYYY-MM-DD HH:MM:SS", strtotime($_POST['startTime']));
+		$end = date("YYYY-MM-DD HH:MM:SS", strtotime($_POST['endTime']));
+		echo $start . " " . $end;
 			try {
 				$sql = "INSERT INTO events VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :startTime, :endTime, :eventProfileJSON)";
 				$data = array(
@@ -593,8 +594,8 @@ class MuseumModel
 					'exhibitId' => $_POST['exhibitId'],
 					'museumId' => $_POST['museumId'],
 					'description' => $_POST['description'],
-					'startTime' => strtotime($_POST['startTime']),
-					'endTime' => strtotime($_POST['endTime']),
+					'startTime' => $start,
+					'endTime' => $end,
 					'eventProfileJSON' => $_POST['eventProfileJSON']
 					);
 				$STH = $this->dbo->prepare($sql);

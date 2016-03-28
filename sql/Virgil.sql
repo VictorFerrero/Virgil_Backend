@@ -135,8 +135,8 @@ CREATE TABLE IF NOT EXISTS `events` (
   `exhibitId` int(11) UNSIGNED NOT NULL,
   `museumId` int(11) UNSIGNED NOT NULL,
   `description` text NOT NULL,
-  `startTime` timestamp NOT NULL,
-  `endTime` timestamp NOT NULL,
+  `startTime` datetime NOT NULL,
+  `endTime` datetime NOT NULL,
   `eventProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
