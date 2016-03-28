@@ -107,4 +107,24 @@ $router->post($routePrefix.'content/deleteContent', function(){
 	$museumController = new MuseumController();
 	return json_encode($museumController->deleteContent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'events/createEvent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createEvent());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'events/updateEvent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateEvent());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'events/deleteEvent', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteEvent());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'events/getEventsForMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getEventsForMuseum());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
 ?>

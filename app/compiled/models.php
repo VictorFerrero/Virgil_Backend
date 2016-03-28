@@ -800,6 +800,131 @@ class MuseumModel
 		return $arrResult;
 	}
 
+
+	public function createEvent() {
+		$success = false;
+		$arrResult = array();
+			try {
+				$sql = "INSERT INTO events VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :startTime, :endTime, :eventProfileJSON)";
+				$data = array(
+					'galleryId' => $_POST['galleryId'],
+					'exhibitId' => $_POST['exhibitId'],
+					'museumId' => $_POST['museumId'],
+					'description' => $_POST['description'],
+					'startTime' => strtotime($_POST['startTime']),
+					'endTime' => strtotime($_POST['endTime']),
+					'eventProfileJSON' => $_POST['eventProfileJSON']
+					);
+				$STH = $this->dbo->prepare($sql);
+				$arrResult['db_result'] = $STH->execute($data);
+				$success = true;
+			} catch(Exception $e) {
+				$arrResult['error'] = $e->getMessage();
+				$success = false;
+			}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function updateEvent() {
+		$arrResult = array();
+		$success = false;
+		 $sql = "UPDATE events SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['galleryId'])) {
+			 $sql = $sql . "galleryId=?, ";
+			 $data[$index] = $_POST['galleryId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['exhibitId'])) {
+			 $sql = $sql . "exhibitId=?, ";
+			 $data[$index] = $_POST['exhibitId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['museumId'])) {
+			 $sql = $sql . "museumId=?, ";
+			 $data[$index] = $_POST['museumId'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['description'])) {
+			 $sql = $sql . "description=?, ";
+			 $data[$index] = $_POST['description'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['startTime'])) {
+			 $sql = $sql . "startTime=?, ";
+			 $data[$index] = strtotime($_POST['startTime']);
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['endTime'])) {
+			 $sql = $sql . "endTime=?, ";
+			 $data[$index] = strtotime($_POST['endTime']);
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['eventProfileJSON'])) {
+			 $sql = $sql . "eventProfileJSON=?, ";
+			 $data[$index] = $_POST['eventProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'] = $e->getMessage();
+			 $success = false;
+		 }	
+		 // use these for debugging
+	//	$arrResult['sql'] = $sql;
+	//	$arrResult['data'] = $data;
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function deleteEvent() {
+		$id = $_POST['id'];
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		try {
+			// delete from the gallery
+			$sql = "DELETE FROM events WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
+			// now we should be done deleting this gallery
+			$success = true;
+		} catch (Exception $e) {
+			$success = false;
+			$arrResult['error'] = $e->getMessage();
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function getEventsForMuseum(){
+		$arrResult = array();
+		$success = false;
+		$data = array('museumId' => $_POST['museumId']);
+		try {
+			$sql = "SELECT * FROM events WHERE museumId=:museumId";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$arrResult['fetch'] = $fetch;
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
 	private function handleUploadedImage($museumId) {
 		$target_dir = "/var/www/html/Virgil_Uploads/images/" . $museumId . "/";
 		$target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);

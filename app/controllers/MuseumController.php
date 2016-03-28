@@ -86,5 +86,22 @@ class MuseumController
 		return ($this->museumModel->deleteContent());
 	}
 	// END of content related functions
+
+	// START of Event related functions
+	public function createEvent() {
+		return ($this->museumModel->createEvent());
+	}
+
+	public function updateEvent() {
+		return ($this->museumModel->updateEvent());
+	}	
+
+	public function deleteEvent() {
+		return ($this->museumModel->deleteEvent());
+	}
+
+	public function getEventsForMuseum() {
+		return ($this->museumModel->getEventsForMuseum());
+	}
 }
 ?>
