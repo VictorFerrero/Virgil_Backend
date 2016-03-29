@@ -910,16 +910,16 @@ class MuseumModel
 		return $arrResult;
 	}
 
-	public function getEventsForMuseum(){
+	public function getEventsForMuseum($id){
 		$arrResult = array();
 		$success = false;
-		$data = array('museumId' => $_POST['museumId']);
+		$data = array('museumId' => $id);
 		try {
 			$sql = "SELECT * FROM events WHERE museumId=:museumId";
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-			$arrResult['fetch'] = $fetch;
+			$arrResult['events'] = $fetch;
 			$success = true;
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();

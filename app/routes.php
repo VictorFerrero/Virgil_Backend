@@ -123,8 +123,8 @@ $router->post($routePrefix.'events/deleteEvent', function(){
 	return json_encode($museumController->deleteEvent());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-$router->post($routePrefix.'events/getEventsForMuseum', function(){
+$router->get($routePrefix.'events/getEventsForMuseum/{id}', function($id){
 	$museumController = new MuseumController();
-	return json_encode($museumController->getEventsForMuseum());
+	return json_encode($museumController->getEventsForMuseum($id));
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 ?>

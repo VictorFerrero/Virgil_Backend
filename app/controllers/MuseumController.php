@@ -100,8 +100,8 @@ class MuseumController
 		return ($this->museumModel->deleteEvent());
 	}
 
-	public function getEventsForMuseum() {
-		return ($this->museumModel->getEventsForMuseum());
+	public function getEventsForMuseum($id) {
+		return ($this->museumModel->getEventsForMuseum($id));
 	}
 }
 ?>
