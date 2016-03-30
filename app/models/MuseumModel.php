@@ -181,19 +181,11 @@ class MuseumModel
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
-			// grab all the file paths to the images that are associated with the content
-			// that is in this museum
-			$sql = "SELECT pathToContent FROM content WHERE museumId=:id";
-			$STH = $this->dbo->prepare($sql);
-			$STH->execute($data);
-			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
-			// go through the content array
-			foreach($content as $intIndex => $arrAssoc) {
-				$path = $arrAssoc['pathToContent'];
-				// TODO: do something to remove the image from the server
-			}
+
 			// delete all the content that was associated with this museum
 			$sql = "DELETE FROM content WHERE museumId=:id";
+			$imageDirPath = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
+			rmdir($imageDirPath); // delete this museums entire directory for images
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
@@ -293,9 +285,10 @@ class MuseumModel
 			$STH->execute($data);
 			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
 			// go through the content array
+			$baseDir = "/var/www/html/Virgil_Uploads/images/";
 			foreach($content as $intIndex => $arrAssoc) {
 				$path = $arrAssoc['pathToContent'];
-				// TODO: do something to remove the image from the server
+				unlink($baseDir . $path);
 			}
 			// delete all the content that was associated with this museum
 			$sql = "DELETE FROM content WHERE galleryId=:id";
@@ -397,10 +390,11 @@ class MuseumModel
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$baseDir = "/var/www/html/Virgil_Uploads/images/";
 			// go through the content array
 			foreach($content as $intIndex => $arrAssoc) {
 				$path = $arrAssoc['pathToContent'];
-				// TODO: do something to remove the image from the server
+				unlink($baseDir . $path);
 			}
 			// delete all the content that was associated with this exhibit
 			$sql = "DELETE FROM content WHERE exhibitId=:id";
@@ -492,13 +486,11 @@ class MuseumModel
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;
-						echo "PATH TO DELETE"  . $pathToDelete;
 						$dir = "/var/www/html/Virgil_Uploads/images/" . $_POST['museumId'];
 					if(is_dir($dir)) {
 						// some content might not have an image associated with it. Lets make
 						// sure we dont try to delete something that isnt there
-						echo "dshfldjgkasdjgkdsagdsg";
-						echo "UNLINK VALUE: " . unlink($pathToDelete);
+						 unlink($pathToDelete);
 					}
 				}
 				else {
