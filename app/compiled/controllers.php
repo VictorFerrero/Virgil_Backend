@@ -19,7 +19,8 @@ class AccountController{
 	}
 	 
 	 public function register() {
-	 	return ($this->accountController->register());
+	 //	return ($this->accountController->register());
+	 	return "HELLO";
 	 }
 	 
 	 
