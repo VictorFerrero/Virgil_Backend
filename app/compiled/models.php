@@ -1,5 +1,5 @@
 <?php
-class MenuModel
+class AccountModel
 {
 	private $dbo;
 		
