@@ -20,13 +20,12 @@ class AccountModel
 		$success = false;
 		 try {
 			$STH = $this->dbo->prepare("SELECT * FROM account WHERE email=:email");
-			$STH->bindParam(":email", $email);
+			$STH->bindParam(":email", $_POST['email']);
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
 			if(is_array($fetch)) {
 				$hashedPassword = $fetch[0]['password'];
-				$password = $_POST['password'];
-				if(password_verify($password, $hashedPassword)) {
+				if(password_verify($_POST['password'], $hashedPassword)) {
 				// username exists in the database and pw hash compare returned true
 				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
 				$arrResult['login'] = true; // the login had the correct credentials
