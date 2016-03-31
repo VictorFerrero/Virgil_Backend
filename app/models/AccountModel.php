@@ -23,11 +23,8 @@ class AccountModel
 			$STH->bindParam(":email", $_POST['email']);
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-			$arrResult['fetch'] = $fetch;
-			$arrResult['count'] = count($fetch);
 			if(count($fetch) == 1) { // there should only be 1 user with this email address in the database
 				$hashedPassword = $fetch[0]['password'];
-				$arrResult['hashedPassword'] = $hashedPassword;
 				if(password_verify($_POST['password'], $hashedPassword)) {
 				// username exists in the database and pw hash compare returned true
 				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
