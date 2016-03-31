@@ -23,18 +23,20 @@ class AccountModel
 			$STH->bindParam(":email", $_POST['email']);
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$arrResult['fetch'] = $fetch;
 			if(is_array($fetch)) {
 				$hashedPassword = $fetch[0]['password'];
+				$arrResult['hashedPassword'] = $hashedPassword;
 				if(password_verify($_POST['password'], $hashedPassword)) {
 				// username exists in the database and pw hash compare returned true
 				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
 				$arrResult['login'] = true; // the login had the correct credentials
 				// find info specific to this type of user
 				$success = true;
-			}
-			else {
-					$arrResult['error_message'][] = "invalid password";
-					$success = false;
+				}
+				else {
+						$arrResult['error_message'][] = "invalid password";
+						$success = false;
 				}
 			}
 			else {
