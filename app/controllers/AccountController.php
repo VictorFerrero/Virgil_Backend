@@ -12,8 +12,7 @@ class AccountController{
 	 }	 
 	 
 	 public function login() {
-
-		return "not implemented yet";
+	 	return ($this->accountModel->login());
 	}
 	 
 	 public function register() {
