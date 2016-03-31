@@ -49,9 +49,8 @@ $router->post($routePrefix.'account/login', function(){
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->post($routePrefix.'account/register', function(){
-	return "HELLO";
-//	$accountController = new AccountController();
-//	return json_encode($accountController->register());
+	$accountController = new AccountController();
+	return json_encode($accountController->register());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->post($routePrefix.'account/updateAccount', function(){
