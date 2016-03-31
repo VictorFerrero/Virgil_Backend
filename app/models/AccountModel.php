@@ -25,6 +25,7 @@ class AccountModel
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
 			if(is_array($fetch)) {
 				$hashedPassword = $fetch[0]['password'];
+				$password = $_POST['password'];
 				if(password_verify($password, $hashedPassword)) {
 				// username exists in the database and pw hash compare returned true
 				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
