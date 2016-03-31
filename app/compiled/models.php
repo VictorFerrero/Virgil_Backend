@@ -195,11 +195,6 @@ class BeaconModel
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
-	  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uuid` text NOT NULL,
-  `major` int(11) UNSIGNED NOT NULL,
-  `minor` int(11) UNSIGNED NOT NULL,
-  `beaconProfileJSON` text NOT NULL,
 	public function updateBeacon() {
 		$arrResult = array();
 		$success = false;
