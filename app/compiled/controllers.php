@@ -1,35 +1,32 @@
 <?php
 class AccountController{
 	
-	 private $accountController; 
+	 private $accountModel; 
 	
 	public function __construct() {
-		 $this->accountController = new AccountController();
+		 $this->accountModel = new AccountModel();
 	 }
 	 
 	 public function __destruct() {
-		 $this->accountController = null;
+		 $this->accountModel = null;
 	 }	 
 	 
 	 public function login() {
-		$email = $_REQUEST['email'];
-		$password = $_REQUEST['password'];
-		$arrResult = $this->userModel->login($email, $password);
-		return $arrResult;
+
+		return "not implemented yet";
 	}
 	 
 	 public function register() {
-	 //	return ($this->accountController->register());
-	 	return "HELLO";
+	 	return ($this->accountModel->register());
 	 }
 	 
 	 
 	 public function updateAccount() {
-		 return ($this->accountController->updateAccount());
+		 return ($this->accountModel->updateAccount());
 	 }
 	 
 	 public function deleteAccount() {
-		 return ($this->accountController->deleteAccount());
+		 return ($this->accountModel->deleteAccount());
 	 }
 }
 ?>
