@@ -24,7 +24,8 @@ class AccountModel
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
 			$arrResult['fetch'] = $fetch;
-			if(is_array($fetch)) {
+			$arrResult['count'] = count($fetch);
+			if(count($fetch) == 1) { // there should only be 1 user with this email address in the database
 				$hashedPassword = $fetch[0]['password'];
 				$arrResult['hashedPassword'] = $hashedPassword;
 				if(password_verify($_POST['password'], $hashedPassword)) {
@@ -39,8 +40,12 @@ class AccountModel
 						$success = false;
 				}
 			}
-			else {
-				// invalid email
+			else if(count($fetch) > 1) {
+				$arrResult['error_message'][] = "multiple users in database with the same email. Contact system admin";
+				$success = false;
+			}
+			else if(count($fetch) == 0) {
+			// invalid email
 				$arrResult['error_message'][] = "invalid email";
 				$success = false;
 			}
@@ -67,7 +72,7 @@ class AccountModel
 			if(is_array($fetch)) {
 				// username exists in the db
 				$boolValidUsername = false;
-				$arrResult['error'][] = "the username already exists";
+				$arrResult['error'][] = "that email is already registered with another account";
 			}
 			else {
 				// username is available
