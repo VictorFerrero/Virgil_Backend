@@ -81,7 +81,8 @@ class MenuModel
 		}
 		// we have a valid username. So lets add it to the db
 		 try {
-		 	$hashedPassword =  password_hash($_POST['password'], PASSWORD_BCRYPT);
+		 //	$hashedPassword =  password_hash($_POST['password'], PASSWORD_BCRYPT);
+		 	$hashedPassword = "THIS IS A TEST";
 			$data = array
 			( 	  'name' => $_POST['name'],
 				  'email' => $_POST['email'], 
