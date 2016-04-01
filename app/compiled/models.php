@@ -1,5 +1,5 @@
 <?php
-class MenuModel
+class AccountModel
 {
 	private $dbo;
 		
@@ -20,25 +20,29 @@ class MenuModel
 		$success = false;
 		 try {
 			$STH = $this->dbo->prepare("SELECT * FROM account WHERE email=:email");
-			$STH->bindParam(":email", $email);
+			$STH->bindParam(":email", $_POST['email']);
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-			if(is_array($fetch)) {
+			if(count($fetch) == 1) { // there should only be 1 user with this email address in the database
 				$hashedPassword = $fetch[0]['password'];
-				if(password_verify($password, $hashedPassword)) {
+				if(password_verify($_POST['password'], $hashedPassword)) {
 				// username exists in the database and pw hash compare returned true
 				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
 				$arrResult['login'] = true; // the login had the correct credentials
 				// find info specific to this type of user
 				$success = true;
-			}
-			else {
-					$arrResult['error_message'][] = "invalid password";
-					$success = false;
+				}
+				else {
+						$arrResult['error_message'][] = "invalid password";
+						$success = false;
 				}
 			}
-			else {
-				// invalid email
+			else if(count($fetch) > 1) {
+				$arrResult['error_message'][] = "multiple users in database with the same email. Contact system admin";
+				$success = false;
+			}
+			else if(count($fetch) == 0) {
+			// invalid email
 				$arrResult['error_message'][] = "invalid email";
 				$success = false;
 			}
@@ -65,7 +69,7 @@ class MenuModel
 			if(is_array($fetch)) {
 				// username exists in the db
 				$boolValidUsername = false;
-				$arrResult['error'][] = "the username already exists";
+				$arrResult['error'][] = "that email is already registered with another account";
 			}
 			else {
 				// username is available
@@ -195,11 +199,6 @@ class BeaconModel
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
-	  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uuid` text NOT NULL,
-  `major` int(11) UNSIGNED NOT NULL,
-  `minor` int(11) UNSIGNED NOT NULL,
-  `beaconProfileJSON` text NOT NULL,
 	public function updateBeacon() {
 		$arrResult = array();
 		$success = false;
@@ -570,13 +569,28 @@ class MuseumModel
 			$arrResult['db_result'][] = $STH->execute($data);
 
 
-			// delete all the content that was associated with this museum
+			// delete all the content that was in this museum
 			$sql = "DELETE FROM content WHERE museumId=:id";
-			$imageDirPath = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
-			rmdir($imageDirPath); // delete this museums entire directory for images
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
+// delete this museums entire directory for images
+			$dirname = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
+			array_map('unlink', glob("$dirname/*.*"));
+			rmdir($dirname); 
+
+			// now we need to check for any events going on in this museum and delete them
+			$sql = "SELECT id FROM events WHERE museumId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
 			// now we should be done deleting this museum
 			$success = true;
 		} catch (Exception $e) {
@@ -682,6 +696,20 @@ class MuseumModel
 			$sql = "DELETE FROM content WHERE galleryId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
+
+			// now we need to check for any events going on in this gallery and delete them
+			$sql = "SELECT id FROM events WHERE galleryId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
+
 			// now we should be done deleting this gallery
 			$success = true;
 		} catch (Exception $e) {
@@ -788,7 +816,21 @@ class MuseumModel
 			$sql = "DELETE FROM content WHERE exhibitId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
-			// now we should be done deleting this museum
+
+						// now we need to check for any events going on in this museum and delete them
+			$sql = "SELECT id FROM events WHERE exhibitId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
+
+			// now we should be done deleting this exhibit
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
@@ -842,6 +884,8 @@ class MuseumModel
 		return $arrResult;
 	}
 
+// NOTE that museumId must always be set along with the id field for this
+	// piece of contents record (unique primary key)
 	public function updateContent() {
 		$arrResult = array();
 		$arr = array(); // tmp variable used for getting response from handleImageUpload

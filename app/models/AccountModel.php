@@ -1,5 +1,5 @@
 <?php
-class MenuModel
+class AccountModel
 {
 	private $dbo;
 		
@@ -20,25 +20,29 @@ class MenuModel
 		$success = false;
 		 try {
 			$STH = $this->dbo->prepare("SELECT * FROM account WHERE email=:email");
-			$STH->bindParam(":email", $email);
+			$STH->bindParam(":email", $_POST['email']);
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-			if(is_array($fetch)) {
+			if(count($fetch) == 1) { // there should only be 1 user with this email address in the database
 				$hashedPassword = $fetch[0]['password'];
-				if(password_verify($password, $hashedPassword)) {
+				if(password_verify($_POST['password'], $hashedPassword)) {
 				// username exists in the database and pw hash compare returned true
 				$arrResult['userInfo'] = $fetch[0]; // not sure what to return. just putting this here for now
 				$arrResult['login'] = true; // the login had the correct credentials
 				// find info specific to this type of user
 				$success = true;
-			}
-			else {
-					$arrResult['error_message'][] = "invalid password";
-					$success = false;
+				}
+				else {
+						$arrResult['error_message'][] = "invalid password";
+						$success = false;
 				}
 			}
-			else {
-				// invalid email
+			else if(count($fetch) > 1) {
+				$arrResult['error_message'][] = "multiple users in database with the same email. Contact system admin";
+				$success = false;
+			}
+			else if(count($fetch) == 0) {
+			// invalid email
 				$arrResult['error_message'][] = "invalid email";
 				$success = false;
 			}
@@ -65,7 +69,7 @@ class MenuModel
 			if(is_array($fetch)) {
 				// username exists in the db
 				$boolValidUsername = false;
-				$arrResult['error'][] = "the username already exists";
+				$arrResult['error'][] = "that email is already registered with another account";
 			}
 			else {
 				// username is available

@@ -182,13 +182,28 @@ class MuseumModel
 			$arrResult['db_result'][] = $STH->execute($data);
 
 
-			// delete all the content that was associated with this museum
+			// delete all the content that was in this museum
 			$sql = "DELETE FROM content WHERE museumId=:id";
-			$imageDirPath = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
-			rmdir($imageDirPath); // delete this museums entire directory for images
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
+// delete this museums entire directory for images
+			$dirname = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
+			array_map('unlink', glob("$dirname/*.*"));
+			rmdir($dirname); 
+
+			// now we need to check for any events going on in this museum and delete them
+			$sql = "SELECT id FROM events WHERE museumId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
 			// now we should be done deleting this museum
 			$success = true;
 		} catch (Exception $e) {
@@ -294,6 +309,20 @@ class MuseumModel
 			$sql = "DELETE FROM content WHERE galleryId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
+
+			// now we need to check for any events going on in this gallery and delete them
+			$sql = "SELECT id FROM events WHERE galleryId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
+
 			// now we should be done deleting this gallery
 			$success = true;
 		} catch (Exception $e) {
@@ -400,7 +429,21 @@ class MuseumModel
 			$sql = "DELETE FROM content WHERE exhibitId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
-			// now we should be done deleting this museum
+
+						// now we need to check for any events going on in this museum and delete them
+			$sql = "SELECT id FROM events WHERE exhibitId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
+
+			// now we should be done deleting this exhibit
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
@@ -454,6 +497,8 @@ class MuseumModel
 		return $arrResult;
 	}
 
+// NOTE that museumId must always be set along with the id field for this
+	// piece of contents record (unique primary key)
 	public function updateContent() {
 		$arrResult = array();
 		$arr = array(); // tmp variable used for getting response from handleImageUpload

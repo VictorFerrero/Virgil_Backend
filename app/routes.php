@@ -25,24 +25,6 @@ $router->get($routePrefix.'getAllMuseums', function(){
 	return json_encode($museumController->getAllMuseums());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
-
-// start of cms related routes
-$router->post($routePrefix.'museum/createMuseum', function(){
-	$museumController = new MuseumController();
-	return json_encode($museumController->createMuseum());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'museum/updateMuseum', function(){
-	$museumController = new MuseumController();
-	return json_encode($museumController->updateMuseum());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-$router->post($routePrefix.'museum/deleteMuseum', function(){
-	$museumController = new MuseumController();
-	return json_encode($museumController->deleteMuseum());
-}, array('before' => 'statsStart', 'after' => 'statsComplete'));
-
-
 $router->post($routePrefix.'account/login', function(){
 	$accountController = new AccountController();
 	return json_encode($accountController->login());
@@ -59,8 +41,25 @@ $router->post($routePrefix.'account/updateAccount', function(){
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->post($routePrefix.'account/deleteAccount', function(){
+	// note that this route is not implemented yet. Not sure about how 
+	// we are going to handle account deletes
 	$accountController = new AccountController();
 	return json_encode($accountController->deleteAccount());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'museum/createMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->createMuseum());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'museum/updateMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->updateMuseum());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'museum/deleteMuseum', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->deleteMuseum());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->post($routePrefix.'gallery/createGallery', function(){
