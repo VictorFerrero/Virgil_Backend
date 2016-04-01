@@ -580,7 +580,7 @@ class MuseumModel
 			rmdir($dirname); 
 
 			// now we need to check for any events going on in this museum and delete them
-			$sql = "SELECT id FROM event WHERE museumId=:id";
+			$sql = "SELECT id FROM events WHERE museumId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
@@ -698,7 +698,7 @@ class MuseumModel
 			$arrResult['db_result'][] = $STH->execute($data);
 
 			// now we need to check for any events going on in this gallery and delete them
-			$sql = "SELECT id FROM event WHERE galleryId=:id";
+			$sql = "SELECT id FROM events WHERE galleryId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
@@ -818,7 +818,7 @@ class MuseumModel
 			$arrResult['db_result'][] = $STH->execute($data);
 
 						// now we need to check for any events going on in this museum and delete them
-			$sql = "SELECT id FROM event WHERE exhibitId=:id";
+			$sql = "SELECT id FROM events WHERE exhibitId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
