@@ -569,13 +569,15 @@ class MuseumModel
 			$arrResult['db_result'][] = $STH->execute($data);
 
 
-			// delete all the content that was associated with this museum
+			// delete all the content that was in this museum
 			$sql = "DELETE FROM content WHERE museumId=:id";
-			$imageDirPath = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
-			rmdir($imageDirPath); // delete this museums entire directory for images
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
 
+// delete this museums entire directory for images
+			$dirname = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
+			array_map('unlink', glob("$dirname/*.*"));
+			rmdir($dirname); 
 			// now we should be done deleting this museum
 			$success = true;
 		} catch (Exception $e) {
@@ -841,6 +843,8 @@ class MuseumModel
 		return $arrResult;
 	}
 
+// NOTE that museumId must always be set along with the id field for this
+	// piece of contents record (unique primary key)
 	public function updateContent() {
 		$arrResult = array();
 		$arr = array(); // tmp variable used for getting response from handleImageUpload
