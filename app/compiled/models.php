@@ -673,6 +673,7 @@ class MuseumModel
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$arrResult['content'] = $content;
 			// go through the content array
 			$baseDir = "/var/www/html/Virgil_Uploads/images/";
 			foreach($content as $intIndex => $arrAssoc) {
