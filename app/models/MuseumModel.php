@@ -191,6 +191,19 @@ class MuseumModel
 			$dirname = "/var/www/html/Virgil_Uploads/images/" . $_POST['id'];
 			array_map('unlink', glob("$dirname/*.*"));
 			rmdir($dirname); 
+
+			// now we need to check for any events going on in this museum and delete them
+			$sql = "SELECT id FROM event WHERE museumId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
 			// now we should be done deleting this museum
 			$success = true;
 		} catch (Exception $e) {
@@ -286,7 +299,6 @@ class MuseumModel
 			$STH = $this->dbo->prepare($sql);
 			$STH->execute($data);
 			$content = $STH->fetchAll(PDO::FETCH_ASSOC);
-			$arrResult['content'] = $content;
 			// go through the content array
 			$baseDir = "/var/www/html/Virgil_Uploads/images/";
 			foreach($content as $intIndex => $arrAssoc) {
@@ -297,6 +309,20 @@ class MuseumModel
 			$sql = "DELETE FROM content WHERE galleryId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
+
+			// now we need to check for any events going on in this gallery and delete them
+			$sql = "SELECT id FROM event WHERE galleryId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
+
 			// now we should be done deleting this gallery
 			$success = true;
 		} catch (Exception $e) {
@@ -403,7 +429,21 @@ class MuseumModel
 			$sql = "DELETE FROM content WHERE exhibitId=:id";
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'][] = $STH->execute($data);
-			// now we should be done deleting this museum
+
+						// now we need to check for any events going on in this museum and delete them
+			$sql = "SELECT id FROM event WHERE exhibitId=:id";
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			if(count($fetch) > 0) { // lets not fuck with $_POST unless we have to
+				foreach($fetch as $intIndex => $arrAssoc) {
+					$id = $arrAssoc['id'];
+					$_POST['id'] = $id;
+					$this->deleteEvent();
+				}
+			}
+
+			// now we should be done deleting this exhibit
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
