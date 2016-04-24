@@ -21,7 +21,6 @@ class BeaconModel
 		$success = false;
 		try {
 			$sql = "SELECT * FROM beacon_content WHERE major=:major AND minor=:minor";
-			$sql .= "s.contentId = c.id";
 			$data = array(
 					'major' => $_POST['major'],
 					'minor' => $_POST['minor']
@@ -45,8 +44,17 @@ class BeaconModel
 		$museumId = $_POST['museumId'];
 		$arrResult = array('error' => array());
 		$success = false;
+		$arr = array();
 		// need to handle image upload
-		$arr =  $this->handleUploadedImage($museumId);
+		if(isset($_POST['hasImage'])){
+			$arr =  $this->handleUploadedImage($museumId);
+		}
+		else { // in this case there is no image for this beacon
+			$arr = array(
+					'success' => true,
+					'pathToContent' => ""
+				)
+		}
 		$arrResult['handleImageUpload'] = $arr;
 		$pathToContent = $arr['pathToContent'];
 		if($arr['success'] == true) {
@@ -83,7 +91,7 @@ class BeaconModel
 		$newPathToContent = "";
 		$oldPathToContent = "";
 		// get the path to the content that is currently in the db, only do that if update contains new image
-		if(isset($_FILES['imageToUpload']['name'])) {
+		if(isset($_POST['hasImage'])) {
 			try {
 				$sql = "SELECT pathToContent FROM beacon_content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
@@ -197,18 +205,18 @@ class BeaconModel
 
 
 	private function handleUploadedImage($museumId) {
+		$arrResult = array('error' => array());
 		$target_dir = "/var/www/html/Virgil_Uploads/beacons/" . $museumId . "/";
 		$target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);
 		$pathToContent = $museumId . "/" . basename($_FILES["imageToUpload"]["name"]);
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-		$arrResult = array('error' => array());
 		// if there is no directory for this museum, then create it
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
 		}
 		// Check if image file is a actual image or fake image
-		if(isset($_POST["submit"])) {
+		if(isset($_POST["submit"])) { 
 		    $check = getimagesize($_FILES["imageToUpload"]["tmp_name"]);
 		    if($check !== false) {
 		        echo "File is an image - " . $check["mime"] . ".";
@@ -219,6 +227,10 @@ class BeaconModel
 		        $arrResult['error'][] = "File is not an image";
 		        $uploadOk = 0;
 		    }
+		}
+		else {
+			$arrResult['success'] = true;
+			return;
 		}
 		// Check if file already exists
 		if (file_exists($target_file)) {

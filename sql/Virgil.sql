@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `beacon_content` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `major` int(11) UNSIGNED NOT NULL,
   `minor` int(11) UNSIGNED NOT NULL,
-  `title` varchar(128) UNSIGNED NOT NULL,
+  `title` varchar(128) NOT NULL,
   `description` text NOT NULL,
   `pathToContent` varchar(64) NOT NULL,
   `beaconContentProfileJSON` text NOT NULL,
