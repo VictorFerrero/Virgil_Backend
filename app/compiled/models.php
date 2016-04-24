@@ -219,7 +219,7 @@ class BeaconModel
 			$arr = array(
 					'success' => true,
 					'pathToContent' => ""
-				)
+				);
 		}
 		$arrResult['handleImageUpload'] = $arr;
 		$pathToContent = $arr['pathToContent'];
