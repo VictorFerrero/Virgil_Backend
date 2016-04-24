@@ -500,7 +500,7 @@ class MuseumModel
 // NOTE that museumId must always be set along with the id field for this
 	// piece of contents record (unique primary key)
 	public function updateContent() {
-		$arrResult = array();
+		$arrResult = array('error' => array());
 		$arr = array(); // tmp variable used for getting response from handleImageUpload
 		$success = false;
 		$newPathToContent = "";
@@ -514,7 +514,7 @@ class MuseumModel
 				$STH->execute();
 				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
 				$oldPathToContent = $fetch['pathToContent'];
-				echo "oldPathToContent:" . $oldPathToContent;
+			//	echo "oldPathToContent:" . $oldPathToContent;
 				$success = true;
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
@@ -527,7 +527,7 @@ class MuseumModel
 			if(isset($_FILES["imageToUpload"]["name"])) {
 				// handle the image: store it in proper directory, make directory path
 				$arr = $this->handleUploadedImage($_POST['museumId']);
-				$arrResult['debug'] = $arr;
+			//	$arrResult['debug'] = $arr;
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;

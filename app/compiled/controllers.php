@@ -36,23 +36,11 @@ class BeaconController
 	
 	// id | to | from | message
 	public function __construct() {
-		$this->beaconModel = new MuseumModel();
+		$this->beaconModel = new BeaconModel();
 	}
 	
 	public function __destruct() {
 		$this->beaconModel = null;
-	}
-
-	public function createBeacon() {
-		return ($this->beaconModel->createBeacon());
-	}
-
-	public function updateBeacon() {
-		return ($this->beaconModel->updateBeacon());
-	}
-
-	public function deleteBeacon(){
-		return ($this->beaconModel->deleteBeacon());
 	}
 
 	public function getContentForBeacon() {
@@ -60,7 +48,15 @@ class BeaconController
 	}	
 
 	public function addContentForBeacon() {
+		return ($this->beaconModel->addContentForBeacon()); 
+	}
 
+	public function updateContentForBeacon() {
+		return ($this->beaconModel->updateContentForBeacon());
+	}
+
+	public function deleteContentForBeacon(){
+		return ($this->beaconModel->deleteContentForBeacon());
 	}
 }
 ?>

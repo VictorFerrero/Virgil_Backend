@@ -126,4 +126,26 @@ $router->get($routePrefix.'events/getEventsForMuseum/{id}', function($id){
 	$museumController = new MuseumController();
 	return json_encode($museumController->getEventsForMuseum($id));
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+// Beacon routes
+$router->post($routePrefix.'beacons/getContentForBeacon', function(){
+	$beaconController = new BeaconController();
+	return json_encode($beaconController->getContentForBeacon());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'beacons/addContentForBeacon', function(){
+	$beaconController = new BeaconController();
+	return json_encode($beaconController->addContentForBeacon());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'beacons/updateContentForBeacon', function(){
+	$beaconController = new BeaconController();
+	return json_encode($beaconController->updateContentForBeacon());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->post($routePrefix.'beacons/deleteContentForBeacon', function(){
+	$beaconController = new BeaconController();
+	return json_encode($beaconController->deleteContentForBeacon());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
 ?>
