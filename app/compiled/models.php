@@ -1012,7 +1012,7 @@ class MuseumModel
 		$newPathToContent = "";
 		$oldPathToContent = "";
 		// get the path to the content that is currently in the db, only do that if update contains new image
-		if(isset($_POST['hasImage']) {
+		if(isset($_POST['hasImage'])) {
 			try {
 				$sql = "SELECT pathToContent FROM content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
