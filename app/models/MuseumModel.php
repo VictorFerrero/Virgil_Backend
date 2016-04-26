@@ -84,6 +84,16 @@ class MuseumModel
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); 
 			$arrResult['museums'] = $fetch;
+			// now lets get all the content for these museums
+			$sql = 'SELECT * FROM content WHERE museumId=:museumId AND exhibitId=:exhibitId AND galleryId=:galleryId';
+			$STH = $this->dbo->prepare($sql);
+			$arrContent = array();
+			foreach($fetch as $intIndex => $arrAssoc) {
+				$museumId = $arrAssoc['id'];
+				$data = array('museumId' => $museumId, 'exhibitId' => 0, 'galleryId' => 0);
+				$STH->execute($data);
+				$arrContent[] = $STH->fetchAll(PDO::FETCH_ASSOC);
+			}
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
