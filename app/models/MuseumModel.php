@@ -94,6 +94,7 @@ class MuseumModel
 				$STH->execute($data);
 				$arrContent[] = $STH->fetchAll(PDO::FETCH_ASSOC);
 			}
+			$arrResult['content'] = $arrContent;
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
