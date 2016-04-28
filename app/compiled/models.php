@@ -1319,7 +1319,7 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $tmp = $this->getMostRecentRecord("museum");
+			 $tmp = $this->getMostRecentRecord("events");
 			if($tmp['success'] == true) {
 				$arrResult['record'] = $tmp['record'];
 				$success = true;
