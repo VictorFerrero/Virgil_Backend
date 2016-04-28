@@ -142,33 +142,16 @@ CREATE TABLE IF NOT EXISTS `events` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Table structure for table `beacons`
--- major will be displaying the museum id that beacon belongs to
--- minor will be displaying an id that maps to the content table
+-- Table structure for table `Content`
 
-CREATE TABLE IF NOT EXISTS `beacons` (
+CREATE TABLE IF NOT EXISTS `beacon_content` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uuid` text NOT NULL,
   `major` int(11) UNSIGNED NOT NULL,
   `minor` int(11) UNSIGNED NOT NULL,
-  `beaconProfileJSON` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
-
---
---  Table structure for table 'beacon_content_map'
--- major will be the museum id. This lets us pull all beacons
--- for a particular museum.
--- minor will be display by beacon and used in this table to map a
--- beacons minor value to 1 or more records in the content table
-CREATE TABLE IF NOT EXISTS `beacon_content_map` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `contentId` int(11) UNSIGNED NOT NULL,
-  `uuid` text NOT NULL,
-  `major` int(11) UNSIGNED NOT NULL,
-  `minor` int(11) UNSIGNED NOT NULL,
-  `profileJSON` text NOT NULL,
+  `title` varchar(128) NOT NULL,
+  `description` text NOT NULL,
+  `pathToContent` varchar(64) NOT NULL,
+  `beaconContentProfileJSON` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

@@ -84,6 +84,17 @@ class MuseumModel
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); 
 			$arrResult['museums'] = $fetch;
+			// now lets get all the content for these museums
+			$sql = 'SELECT * FROM content WHERE museumId=:museumId AND exhibitId=:exhibitId AND galleryId=:galleryId';
+			$STH = $this->dbo->prepare($sql);
+			$arrContent = array();
+			foreach($fetch as $intIndex => $arrAssoc) {
+				$museumId = $arrAssoc['id'];
+				$data = array('museumId' => $museumId, 'exhibitId' => 0, 'galleryId' => 0);
+				$STH->execute($data);
+				$arrContent[] = $STH->fetchAll(PDO::FETCH_ASSOC);
+			}
+			$arrResult['content'] = $arrContent;
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
@@ -500,13 +511,13 @@ class MuseumModel
 // NOTE that museumId must always be set along with the id field for this
 	// piece of contents record (unique primary key)
 	public function updateContent() {
-		$arrResult = array();
+		$arrResult = array('error' => array());
 		$arr = array(); // tmp variable used for getting response from handleImageUpload
 		$success = false;
 		$newPathToContent = "";
 		$oldPathToContent = "";
 		// get the path to the content that is currently in the db, only do that if update contains new image
-		if(isset($_FILES['imageToUpload']['name'])) {
+		if(isset($_POST['hasImage'])) {
 			try {
 				$sql = "SELECT pathToContent FROM content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
@@ -514,7 +525,7 @@ class MuseumModel
 				$STH->execute();
 				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
 				$oldPathToContent = $fetch['pathToContent'];
-				echo "oldPathToContent:" . $oldPathToContent;
+			//	echo "oldPathToContent:" . $oldPathToContent;
 				$success = true;
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
@@ -527,7 +538,7 @@ class MuseumModel
 			if(isset($_FILES["imageToUpload"]["name"])) {
 				// handle the image: store it in proper directory, make directory path
 				$arr = $this->handleUploadedImage($_POST['museumId']);
-				$arrResult['debug'] = $arr;
+			//	$arrResult['debug'] = $arr;
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;
