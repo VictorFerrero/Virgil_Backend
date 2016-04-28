@@ -265,7 +265,7 @@ class BeaconModel
 		$newPathToContent = "";
 		$oldPathToContent = "";
 		// get the path to the content that is currently in the db, only do that if update contains new image
-		if(isset(isset($_FILES['imageToUpload']['name'])) {
+		if(isset($_FILES['imageToUpload']['name'])) {
 			try {
 				$sql = "SELECT pathToContent FROM beacon_content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
