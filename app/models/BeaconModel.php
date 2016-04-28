@@ -52,7 +52,7 @@ class BeaconModel
 		else { // in this case there is no image for this beacon
 			$arr = array(
 					'success' => true,
-					'pathToContent' => ""
+					'pathToContent' => "noImage"
 				);
 		}
 		$arrResult['handleImageUpload'] = $arr;
