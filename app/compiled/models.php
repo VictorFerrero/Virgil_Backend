@@ -177,102 +177,6 @@ class BeaconModel
 	public function __destruct() {
 		$this->dbo = null;
 	}
-	
-	public function createBeacon() {
-		$arrResult = array();
-		$success = false;
-		try {
-			$sql = "INSERT INTO beacons VALUES (NULL, :uuid, :major,:minor, :beaconProfileJSON)";
-			$data = array(
-				'uuid' => $_POST['uuid'],
-				'major' => $_POST['major'],
-				'minor' => $_POST['minor'],
-				'beaconProfileJSON' => $_POST['beaconProfileJSON']
-				);
-			$STH = $this->dbo->prepare($sql);
-			$arrResult['db_result'] = $STH->execute($data);
-			$success = true;
-		} catch(Exception $e) {
-			$arrResult['error'] = $e->getMessage();
-			$success = false;
-		}
-		$arrResult['success'] = $success;
-		return $arrResult;
-	}
-	public function updateBeacon() {
-		$arrResult = array();
-		$success = false;
-		 $sql = "UPDATE beacons SET ";
-		 $data = array();
-		 $index = 0;
-		 if(isset($_POST['uuid'])) {
-			 $sql = $sql . "uuid=?, ";
-			 $data[$index] = $_POST['uuid'];
-			 $index = $index + 1;
-		 }
-		 if(isset($_POST['major'])) {
-			 $sql = $sql . "major=?, ";
-			 $data[$index] = $_POST['major'];
-			 $index = $index + 1;
-		 }
-		 if(isset($_POST['minor'])) {
-			 $sql = $sql . "minor=?, ";
-			 $data[$index] = $_POST['minor'];
-			 $index = $index + 1;
-		 }
-		 if(isset($_POST['beaconProfileJSON'])) {
-			 $sql = $sql . "beaconProfileJSON=?, ";
-			 $data[$index] = $_POST['beaconProfileJSON'];
-			 $index = $index + 1;
-		 }
-		 // get rid of the last two characters
-		 $sql = substr($sql,0,-2);
-		 $sql = $sql . " WHERE id=?";
-		 $data[$index] = $_POST['id'];
-		try {
-			 $STH = $this->dbo->prepare($sql);
-			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
-	     } catch (Exception $e) {
-			 $arrResult['error'] = $e->getMessage();
-			 $success = false;
-		 }	
-		 // use these for debugging
-	//	$arrResult['sql'] = $sql;
-	//	$arrResult['data'] = $data;
-		$arrResult['success'] = $success;
-		return $arrResult;
-	}
-
-	public function deleteBeacon() {
-		// TODO: delete content associated with a beacon
-		$arrResult = array('db_result' => array());
-		$success = false;
-		$data = array('id' => $_POST['id']);
-		try {
-			$sql = "SELECT contentId FROM beacons WHERE id=:id";
-			$STH = $this->dbo->prepare($sql);
-			$STH->execute($data);
-			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
-
-			// delete all the content associated with this beacon
-			$museumController = new MuseumController();
-			foreach($fetch as $intIndex => $arrAssoc) {
-				$_POST['id'] = $fetch[$intIndex]['contentId'];
-				$museumController->deleteContent(); // this will deal with removing the images as well
-			}
-			// delete from the museum table
-			$sql = "DELETE FROM beacons WHERE id=:id";
-			$STH = $this->dbo->prepare($sql);
-			$arrResult['db_result'][] = $STH->execute($data);
-			$success = true;
-		} catch (Exception $e) {
-			$success = false;
-			$arrResult['error'] = $e->getMessage();
-		}
-		$arrResult['success'] = $success;
-		return $arrResult;
-	}
 
 // we will pass in major and minor values from the beacon to select content.
 // major will give us that particular museums unique ID, and minor will be unique id for that beacon
@@ -282,8 +186,7 @@ class BeaconModel
 		$arrResult = array();
 		$success = false;
 		try {
-			$sql = "SELECT * FROM content AS c WHERE major=:major AND minor=:minor INNER JOIN beacon_content_map AS s ON ";
-			$sql .= "s.contentId = c.id";
+			$sql = "SELECT * FROM beacon_content WHERE major=:major AND minor=:minor";
 			$data = array(
 					'major' => $_POST['major'],
 					'minor' => $_POST['minor']
@@ -304,24 +207,240 @@ class BeaconModel
 	public function addContentForBeacon() {
 		// lets only worry about inserting into the beacon_content_map table here
 		// we will make a seperate call to /content/createContent() to actually create the content
-		$arrResult = array();
+		$museumId = $_POST['museumId'];
+		$arrResult = array('error' => array());
 		$success = false;
-		try {
-			$sql = "INSERT INTO beacon_content_map VALUES (NULL, :contentId, :uuid,:major, :minor, :profileJSON)";
-			$data = array(
-				'contentId' => $_POST['contentId'],
-				'uuid' => $_POST['uuid'],
-				'major' => $_POST['major'],
-				'minor' => $_POST['minor'],
-				'profileJSON' => $_POST['beaconProfileJSON']
+		$arr = array();
+		// need to handle image upload
+		if(isset($_POST['hasImage'])){
+			$arr =  $this->handleUploadedImage($museumId);
+		}
+		else { // in this case there is no image for this beacon
+			$arr = array(
+					'success' => true,
+					'pathToContent' => ""
 				);
+		}
+		$arrResult['handleImageUpload'] = $arr;
+		$pathToContent = $arr['pathToContent'];
+		if($arr['success'] == true) {
+			try {
+				$sql = "INSERT INTO beacon_content VALUES (NULL, :major, :minor,:title, :description, :pathToContent, :beaconContentProfileJSON)";
+				$data = array(
+					'major' => $_POST['major'],
+					'minor' => $_POST['minor'],
+					'title' => $_POST['title'],
+					'description' => $_POST['description'],
+					'pathToContent' => $pathToContent, 
+					'beaconContentProfileJSON' => $_POST['beaconContentProfileJSON']
+					);
+				$STH = $this->dbo->prepare($sql);
+				$arrResult['db_result'] = $STH->execute($data);
+				$success = true;
+			} catch(Exception $e) {
+				$arrResult['error'][] = $e->getMessage();
+				$success = false;
+			}
+		}
+		else {
+			$arrResult['error'][] = "error handling image uploaded";
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	public function updateContentForBeacon() {
+		$arrResult = array('error' => array());
+		$arr = array(); // tmp variable used for getting response from handleImageUpload
+		$success = false;
+		$newPathToContent = "";
+		$oldPathToContent = "";
+		// get the path to the content that is currently in the db, only do that if update contains new image
+		if(isset($_POST['hasImage'])) {
+			try {
+				$sql = "SELECT pathToContent FROM beacon_content WHERE id=:id";
+				$STH = $this->dbo->prepare($sql);
+				$STH->bindParam(":id", $_POST['id']);
+				$STH->execute();
+				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+				$oldPathToContent = $fetch['pathToContent'];
+				//echo "oldPathToContent:" . $oldPathToContent;
+				$success = true;
+			} catch(Exception $e) {
+				$arrResult['error'][] = $e->getMessage();
+				$success = false;
+			}
+		}
+		// we were able to grab the location of the old content
+		if ($success == true) {
+			// see if there is a file pending upload
+			if(isset($_FILES["imageToUpload"]["name"])) {
+				// handle the image: store it in proper directory, make directory path
+				$arr = $this->handleUploadedImage($_POST['museumId']);
+				$arrResult['debug'] = $arr;
+				if($arr['success'] == true) {
+					$newPathToContent = $arr['pathToContent'];
+					$pathToDelete = "/var/www/html/Virgil_Uploads/beacons/" . $oldPathToContent;
+					$dir = "/var/www/html/Virgil_Uploads/beacons/" . $_POST['museumId'];
+					if(is_dir($dir)) {
+						// some content might not have an image associated with it. Lets make
+						// sure we dont try to delete something that isnt there
+						 unlink($pathToDelete);
+					}
+				}
+				else {
+					$success = false;
+				}
+			}
+		}
+		// now we proceed with routine update
+		 $sql = "UPDATE beacon_content SET ";
+		 $data = array();
+		 $index = 0;
+		 if(isset($_POST['major'])) {
+			 $sql = $sql . "major=?, ";
+			 $data[$index] = $_POST['major'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['minor'])) {
+			 $sql = $sql . "minor=?, ";
+			 $data[$index] = $_POST['minor'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['title'])) {
+			 $sql = $sql . "title=?, ";
+			 $data[$index] = $_POST['title'];
+			 $index = $index + 1;
+		 }
+		 if(isset($_POST['description'])) {
+			 $sql = $sql . "description=?, ";
+			 $data[$index] = $_POST['description'];
+			 $index = $index + 1;
+		 }
+		 if(strcmp($newPathToContent, "") != 0) {
+		 // $newPathToContent will get set if a file upload happens above	
+			 $sql = $sql . "pathToContent=?, ";
+			 $data[$index] = $newPathToContent;
+			 $index = $index + 1;
+		 } 
+		 if(isset($_POST['beaconContentProfileJSON'])) {
+			 $sql = $sql . "beaconContentProfileJSON=?, ";
+			 $data[$index] = $_POST['beaconContentProfileJSON'];
+			 $index = $index + 1;
+		 }
+		 // get rid of the last two characters
+		 $sql = substr($sql,0,-2);
+		 $sql = $sql . " WHERE id=?";
+		 $data[$index] = $_POST['id'];
+		try {
+			 $STH = $this->dbo->prepare($sql);
+			 $arrResult['db_result'] = $STH->execute($data);
+			 $success = true;
+	     } catch (Exception $e) {
+			 $arrResult['error'][] = $e->getMessage();
+			 $success = false;
+		 }	
+		 $arrResult['success'] = true;
+		return $arrResult;
+	}
+
+	public function deleteContentForBeacon(){
+		$arrResult = array('db_result' => array());
+		$success = false;
+		$data = array('id' => $_POST['id']);
+		$basePath = "/var/www/html/Virgil_Uploads/beacons/";
+		// first lets delete the content image from directory
+		try {
+			$sql = "SELECT pathToContent FROM beacon_content WHERE id=:id";
 			$STH = $this->dbo->prepare($sql);
-			$arrResult['db_result'] = $STH->execute($data);
+			$STH->execute($data);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+			unlink($basePath . $fetch['pathToContent']);
+			$sql = "DELETE FROM beacon_content WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$arrResult['db_result'][] = $STH->execute($data);
 			$success = true;
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
 		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+
+	private function handleUploadedImage($museumId) {
+		$arrResult = array('error' => array());
+		$target_dir = "/var/www/html/Virgil_Uploads/beacons/" . $museumId . "/";
+		$target_file = $target_dir . basename($_FILES["imageToUpload"]["name"]);
+		$pathToContent = $museumId . "/" . basename($_FILES["imageToUpload"]["name"]);
+		$uploadOk = 1;
+		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+		// if there is no directory for this museum, then create it
+		if (!is_dir($target_dir)) {
+   			 mkdir($target_dir, 0777, true);
+		}
+		// Check if image file is a actual image or fake image
+		if(isset($_POST["submit"])) { 
+		    $check = getimagesize($_FILES["imageToUpload"]["tmp_name"]);
+		    if($check !== false) {
+		        echo "File is an image - " . $check["mime"] . ".";
+		        $uploadOk = 1;
+		    } 
+		    else {
+		        echo "File is not an image.";
+		        $arrResult['error'][] = "File is not an image";
+		        $uploadOk = 0;
+		    }
+		}
+		else {
+			$arrResult['success'] = true;
+			return;
+		}
+		// Check if file already exists
+		if (file_exists($target_file)) {
+		   echo "Sorry, file already exists.";
+		   $arrResult['error'][] = "File already exists";
+		    $uploadOk = 0;
+		}
+		// Check file size. handle this client side
+		/*
+		if ($_FILES["imageToUpload"]["size"] > 500000) {
+		  //  echo "Sorry, your file is too large.";
+		  $arrResult['error'][] = "the file is too large";
+		    $uploadOk = 0;
+		}
+		*/
+		// Allow certain file formats. handle this client side
+		/*
+		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+		&& $imageFileType != "gif" ) {
+		 //   echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+		 $arrResult['error'][] = "image format not supported";
+		    $uploadOk = 0;
+		}
+		*/
+		// Check if $uploadOk is set to 0 by an error
+		if ($uploadOk == 0) {
+		    echo "Sorry, your file was not uploaded.";
+		    $arrResult['error'][] = "You file was not uploaded";
+		    $success = false;
+		// if everything is ok, try to upload file
+		} 
+		else {
+		    if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], $target_file)) {
+		    	chmod($target_file, 0777);
+		        echo "The file ". basename( $_FILES["imageToUpload"]["name"]). " has been uploaded.";
+		    	$success = true;
+		    } 
+		    else {
+		        echo "Sorry, there was an error uploading your file.";
+		        $arrResult['error'][] = "Sorry, there was an error uploading your file.";
+		    	$success = false;
+		    }
+		}
+		$arrResult['pathToContent'] = $pathToContent;
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
@@ -471,6 +590,17 @@ class MuseumModel
 			$STH->execute();
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); 
 			$arrResult['museums'] = $fetch;
+			// now lets get all the content for these museums
+			$sql = 'SELECT * FROM content WHERE museumId=:museumId AND exhibitId=:exhibitId AND galleryId=:galleryId';
+			$STH = $this->dbo->prepare($sql);
+			$arrContent = array();
+			foreach($fetch as $intIndex => $arrAssoc) {
+				$museumId = $arrAssoc['id'];
+				$data = array('museumId' => $museumId, 'exhibitId' => 0, 'galleryId' => 0);
+				$STH->execute($data);
+				$arrContent[] = $STH->fetchAll(PDO::FETCH_ASSOC);
+			}
+			$arrResult['content'] = $arrContent;
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
@@ -887,13 +1017,13 @@ class MuseumModel
 // NOTE that museumId must always be set along with the id field for this
 	// piece of contents record (unique primary key)
 	public function updateContent() {
-		$arrResult = array();
+		$arrResult = array('error' => array());
 		$arr = array(); // tmp variable used for getting response from handleImageUpload
 		$success = false;
 		$newPathToContent = "";
 		$oldPathToContent = "";
 		// get the path to the content that is currently in the db, only do that if update contains new image
-		if(isset($_FILES['imageToUpload']['name'])) {
+		if(isset($_POST['hasImage'])) {
 			try {
 				$sql = "SELECT pathToContent FROM content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
@@ -901,7 +1031,7 @@ class MuseumModel
 				$STH->execute();
 				$fetch = $STH->fetch(PDO::FETCH_ASSOC);
 				$oldPathToContent = $fetch['pathToContent'];
-				echo "oldPathToContent:" . $oldPathToContent;
+			//	echo "oldPathToContent:" . $oldPathToContent;
 				$success = true;
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
@@ -914,7 +1044,7 @@ class MuseumModel
 			if(isset($_FILES["imageToUpload"]["name"])) {
 				// handle the image: store it in proper directory, make directory path
 				$arr = $this->handleUploadedImage($_POST['museumId']);
-				$arrResult['debug'] = $arr;
+			//	$arrResult['debug'] = $arr;
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/images/" . $oldPathToContent;
