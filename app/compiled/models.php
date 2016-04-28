@@ -645,7 +645,7 @@ class MuseumModel
 	}
 
 	public function createMuseum() {
-		$arrResult = array();
+		$arrResult = array('errors' => array());
 		$success = false;
 		try {
 			$sql = "INSERT INTO museum VALUES (NULL, :accountId, :museumName,:address, :museumProfileJSON)";
@@ -667,7 +667,7 @@ class MuseumModel
 				$success = false; 
 			}
 		} catch(Exception $e) {
-			$arrResult['error'] = $e->getMessage();
+			$arrResult['errors'][] = $e->getMessage();
 			$success = false;
 		}
 		$arrResult['success'] = $success;
@@ -675,7 +675,7 @@ class MuseumModel
 	}
 
 	public function updateMuseum() {
-		$arrResult = array();
+		$arrResult = array('errors' => array());
 		$success = false;
 		 $sql = "UPDATE museum SET ";
 		 $data = array();
@@ -717,7 +717,7 @@ class MuseumModel
 				$success = false; 
 			}
 	     } catch (Exception $e) {
-			 $arrResult['error'] = $e->getMessage();
+			 $arrResult['errors'][] = $e->getMessage();
 			 $success = false;
 		 }	
 		 // use these for debugging
@@ -729,7 +729,7 @@ class MuseumModel
 
 	public function deleteMuseum() {
 		// must delete everything!!!
-		$arrResult = array('db_result' => array());
+		$arrResult = array('db_result' => array(), 'errors' => array());
 		$success = false;
 		$data = array('id' => $_POST['id']);
 		try {
@@ -775,7 +775,7 @@ class MuseumModel
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
-			$arrResult['error'] = $e->getMessage();
+			$arrResult['errors'][] = $e->getMessage();
 		}
 		$arrResult['success'] = $success;
 		return $arrResult;
