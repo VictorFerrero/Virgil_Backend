@@ -31,9 +31,9 @@ class MuseumController
 		foreach($arr['museums'] as $intIndex => $arrAssoc) {
 			$profileJson = $arrAssoc['museumProfileJSON'];
 			$data = json_decode($profileJson, true);
-			$arr['museums'][$inIndex]['museumZipcode'] = $data['zipcode'];
-			$arr['museums'][$inIndex]['museumCity'] = $data['city'];
-			$arr['museums'][$inIndex]['museumState']= $data['state'];
+			$arr['museums'][$intIndex]['museumZipcode'] = $data['zipcode'];
+			$arr['museums'][$intIndex]['museumCity'] = $data['city'];
+			$arr['museums'][$intIndex]['museumState']= $data['state'];
 		}
 		return $arr;
 	}
