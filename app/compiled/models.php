@@ -707,15 +707,12 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			$tmp = $this->getMostRecentRecord("museum");
-			if($tmp['success'] == true) {
-				$arrResult['record'] = $tmp['record'];
-				$success = true;
-			}
-			else {
-				$arrResult['record'] = $tmp; // return whole response for debugging
-				$success = false; 
-			}
+			$sql = "SELECT * FROM museum WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$data = array('id' => $_POST['id']);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$arrResult['record'] = $fetch;
 	     } catch (Exception $e) {
 			 $arrResult['errors'][] = $e->getMessage();
 			 $success = false;
