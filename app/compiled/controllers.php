@@ -156,8 +156,8 @@ class MuseumController
 	private function splitTimes($strTime) {
 		$arrResult = array();
 		$arrTmp = explode("-", $strTime);
-		$arrResult[0] = $arrTmp[0];
-		$arrResult[1] = $arrTmp[1];
+		$arrResult[0] = $arrTmp[0].trim();
+		$arrResult[1] = $arrTmp[1].trim();
 		return $arrResult;
 	}
 	
