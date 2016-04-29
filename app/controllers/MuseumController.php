@@ -50,7 +50,13 @@ class MuseumController
 	}
 	
 	public function updateMuseum(){
-		return ($this->museumModel->updateMuseum());
+		$arr = $this->museumModel->updateMuseum();
+		$profileJson = $arr['record']['museumProfileJSON'];
+		$data = json_decode($profileJson, true);
+		$arr['record']['museumZipcode'] = $data['zipcode'];
+		$arr['record']['museumCity'] = $data['city'];
+		$arr['record']['museumState']= $data['state'];
+		return ($arr);
 	}
 	
 	// must do delete of all galleries and exhibits
