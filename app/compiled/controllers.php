@@ -235,6 +235,8 @@ class MuseumController
 			$arr['record']['museumSundayHoursOpen'] = $splitTime[0];
 			$arr['record']['museumSundayHoursClose'] = $splitTime[1];
 			$arr['debug'] = $splitTime;
+			// dsgdfg
+			$arr['tfdgf'] = 'dfgdfhfd';
 		return ($arr);
 	}
 	
