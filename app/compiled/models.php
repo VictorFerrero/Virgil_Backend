@@ -713,6 +713,7 @@ class MuseumModel
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
 			$arrResult['record'] = $fetch;
+			$success = true;
 	     } catch (Exception $e) {
 			 $arrResult['errors'][] = $e->getMessage();
 			 $success = false;
