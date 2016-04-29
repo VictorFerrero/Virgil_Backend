@@ -776,6 +776,7 @@ class MuseumModel
 			$arrResult['errors'][] = $e->getMessage();
 		}
 		$arrResult['success'] = $success;
+		$arrResult['id'] = $_POST['id']; // send the id back to the caller to make changes on front end
 		return $arrResult;
 	}
 	// END of museum related functions
