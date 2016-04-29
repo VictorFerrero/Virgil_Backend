@@ -76,7 +76,7 @@ class MuseumModel
 	}
 	
 	public function getAllMuseums() {
-		$arrResult = array();
+		$arrResult = array('errors'=> array());
 		$success = false;
 		 try {
 		    $sql = "SELECT * FROM museum";		
@@ -98,7 +98,7 @@ class MuseumModel
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
-			$arrResult['error'] = $e->getMessage();
+			$arrResult['errors'][] = $e->getMessage();
 		}
 		$arrResult['success'] = $success;
 		return $arrResult;
