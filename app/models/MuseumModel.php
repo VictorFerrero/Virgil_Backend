@@ -171,7 +171,7 @@ class MuseumModel
 			$STH = $this->dbo->prepare($sql);
 			$data = array('id' => $_POST['id']);
 			$STH->execute($data);
-			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
 			$arrResult['record'] = $fetch;
 			$success = true;
 	     } catch (Exception $e) {
