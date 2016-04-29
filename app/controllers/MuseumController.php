@@ -71,7 +71,7 @@ class MuseumController
 	
 	private function splitTimes($strTime) {
 		$arrResult = array();
-		$arrTmp = explode(" - ", $strTime);
+		$arrTmp = explode("-", $strTime);
 		$arrResult[0] = $arrTmp[0];
 		$arrResult[1] = $arrTmp[1];
 		return $arrResult;
@@ -113,7 +113,6 @@ class MuseumController
 			$arr['record']['museumSundayHoursOpen'] = $splitTime[0];
 			$arr['record']['museumSundayHoursClose'] = $splitTime[1];
 
-			$arr['debug'] = $splitTime;
 		return ($arr);
 	}
 	
