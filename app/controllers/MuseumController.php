@@ -41,12 +41,12 @@ class MuseumController
 	
 	public function createMuseum() {
 		$arr = $this->museumModel->createMuseum();
-		$profileJson = $arr['record']['museumProfileJSON'];
+	/*	$profileJson = $arr['record']['museumProfileJSON'];
 		$data = json_decode($profileJson, true);
 		$arr['record']['museumZipcode'] = $data['zipcode'];
 		$arr['record']['museumCity'] = $data['city'];
 		$arr['record']['museumState']= $data['state'];
-		
+	*/	
 		return ($arr);
 	}
 	
