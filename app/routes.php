@@ -1,6 +1,6 @@
 <?php
 /*Test Functions*/
-$routePrefix = 'Virgil_Backend/index.php/';
+$routePrefix = 'Virgil_Backend_Stage/Virgil_Backend/index.php/';
 
 $router->get($routePrefix.'hello/{name}', function($name){
 	$str = "Hello, " . $name . "!";

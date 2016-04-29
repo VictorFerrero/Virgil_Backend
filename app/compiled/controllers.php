@@ -119,7 +119,7 @@ class MuseumController
 			$arrAssoc['museumCity'] = $data['city'];
 			$arrAssoc['museumState'] = $data['state'];
 		}
-		return ($this->museumModel->getAllMuseums());
+		return $arr;
 	}
 	
 	
