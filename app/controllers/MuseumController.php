@@ -112,6 +112,8 @@ class MuseumController
 			$splitTime = $this->splitTimes($data['sun']);
 			$arr['record']['museumSundayHoursOpen'] = $splitTime[0];
 			$arr['record']['museumSundayHoursClose'] = $splitTime[1];
+
+			$arr['debug'] = $splitTime;
 		return ($arr);
 	}
 	
@@ -150,9 +152,6 @@ class MuseumController
 			$splitTime = $this->splitTimes($data['sun']);
 			$arr['record']['museumSundayHoursOpen'] = $splitTime[0];
 			$arr['record']['museumSundayHoursClose'] = $splitTime[1];
-			$arr['debug'] = $splitTime;
-			// dsgdfg
-			$arr['tfdgf'] = 'dfgdfhfd';
 		return ($arr);
 	}
 	
