@@ -111,6 +111,14 @@ class MuseumController
 	}
 	
 	public function getAllMuseums() {
+		$arr = $this->museumModel->getAllMuseums();
+		foreach($arr['museums'] as $intIndex => $arrAssoc) {
+			$profileJson = $arrAssoc['museumProfileJSON'];
+			$data = json_decode($profileJson, true);
+			$arrAssoc['museumZipcode'] = $data['zipcode'];
+			$arrAssoc['museumCity'] = $data['city'];
+			$arrAssoc['museumState'] = $data['state'];
+		}
 		return ($this->museumModel->getAllMuseums());
 	}
 	
