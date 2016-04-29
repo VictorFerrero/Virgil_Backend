@@ -24,6 +24,5 @@ class DatabaseConnectionStrings{
 					"dsn"=>'mysql:host='.$numericalArr[0].';dbname='.$numericalArr[3].'',
 					"options"=>$optionsArr);
 	}
-
 }
 ?>

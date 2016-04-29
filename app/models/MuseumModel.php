@@ -123,7 +123,15 @@ class MuseumModel
 				);
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'] = $STH->execute($data);
-			$success = true;
+			$tmp = $this->getMostRecentRecord("museum");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
@@ -165,7 +173,15 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
+			$tmp = $this->getMostRecentRecord("museum");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
@@ -245,7 +261,15 @@ class MuseumModel
 				);
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'] = $STH->execute($data);
-			$success = true;
+			$tmp = $this->getMostRecentRecord("gallery");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
@@ -282,7 +306,15 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
+			 $tmp = $this->getMostRecentRecord("gallery");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
@@ -365,7 +397,15 @@ class MuseumModel
 				);
 			$STH = $this->dbo->prepare($sql);
 			$arrResult['db_result'] = $STH->execute($data);
-			$success = true;
+			$tmp = $this->getMostRecentRecord("exhibit");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 		} catch(Exception $e) {
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
@@ -407,7 +447,15 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
+			 $tmp = $this->getMostRecentRecord("exhibit");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
@@ -504,7 +552,15 @@ class MuseumModel
 					);
 				$STH = $this->dbo->prepare($sql);
 				$arrResult['db_result'] = $STH->execute($data);
-				$success = true;
+				$tmp = $this->getMostRecentRecord("content");
+				if($tmp['success'] == true) {
+					$arrResult['record'] = $tmp['record'];
+					$success = true;
+				}
+				else {
+					$arrResult['record'] = $tmp; // return whole response for debugging
+					$success = false; 
+				}
 			} catch(Exception $e) {
 				$arrResult['error'] = $e->getMessage();
 				$success = false;
@@ -602,11 +658,20 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
+			$tmp = $this->getMostRecentRecord("content");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 	     } catch (Exception $e) {
 			 $arrResult['error'][] = $e->getMessage();
 			 $success = false;
 		 }	
+		 $arrResult['success'] = $success;
 		return $arrResult;
 	}
 
@@ -653,7 +718,15 @@ class MuseumModel
 					);
 				$STH = $this->dbo->prepare($sql);
 				$arrResult['db_result'] = $STH->execute($data);
-				$success = true;
+				$tmp = $this->getMostRecentRecord("events");
+				if($tmp['success'] == true) {
+					$arrResult['record'] = $tmp['record'];
+					$success = true;
+				}
+				else {
+					$arrResult['record'] = $tmp; // return whole response for debugging
+					$success = false; 
+				}
 			} catch(Exception $e) {
 				$arrResult['error'] = $e->getMessage();
 				$success = false;
@@ -712,7 +785,15 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
+			 $tmp = $this->getMostRecentRecord("events");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
@@ -830,6 +911,24 @@ class MuseumModel
 		    }
 		}
 		$arrResult['pathToContent'] = $pathToContent;
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	private function getMostRecentRecord($tablename) {
+		$sql = "SELECT * FROM " . $tablename . " ORDER BY id DESC LIMIT 1";
+		$arrResult = array();
+		$success = false;
+		try {
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute();
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC); // should only return 1 record
+			$arrResult['record'] = $fetch;
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}

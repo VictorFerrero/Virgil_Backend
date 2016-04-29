@@ -52,7 +52,7 @@ class BeaconModel
 		else { // in this case there is no image for this beacon
 			$arr = array(
 					'success' => true,
-					'pathToContent' => ""
+					'pathToContent' => "noImage"
 				);
 		}
 		$arrResult['handleImageUpload'] = $arr;
@@ -70,7 +70,15 @@ class BeaconModel
 					);
 				$STH = $this->dbo->prepare($sql);
 				$arrResult['db_result'] = $STH->execute($data);
-				$success = true;
+				$tmp = $this->getMostRecentRecord("beacon_content");
+				if($tmp['success'] == true) {
+					$arrResult['record'] = $tmp['record'];
+					$success = true;
+				}
+				else {
+					$arrResult['record'] = $tmp; // return whole response for debugging
+					$success = false; 
+				}
 			} catch(Exception $e) {
 				$arrResult['error'][] = $e->getMessage();
 				$success = false;
@@ -91,7 +99,7 @@ class BeaconModel
 		$newPathToContent = "";
 		$oldPathToContent = "";
 		// get the path to the content that is currently in the db, only do that if update contains new image
-		if(isset($_POST['hasImage'])) {
+		if(isset($_FILES['imageToUpload']['name'])) {
 			try {
 				$sql = "SELECT pathToContent FROM beacon_content WHERE id=:id";
 				$STH = $this->dbo->prepare($sql);
@@ -112,7 +120,7 @@ class BeaconModel
 			if(isset($_FILES["imageToUpload"]["name"])) {
 				// handle the image: store it in proper directory, make directory path
 				$arr = $this->handleUploadedImage($_POST['museumId']);
-				$arrResult['debug'] = $arr;
+			//	$arrResult['debug'] = $arr;
 				if($arr['success'] == true) {
 					$newPathToContent = $arr['pathToContent'];
 					$pathToDelete = "/var/www/html/Virgil_Uploads/beacons/" . $oldPathToContent;
@@ -170,7 +178,15 @@ class BeaconModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $success = true;
+			$tmp = $this->getMostRecentRecord("beacon_content");
+			if($tmp['success'] == true) {
+				$arrResult['record'] = $tmp['record'];
+				$success = true;
+			}
+			else {
+				$arrResult['record'] = $tmp; // return whole response for debugging
+				$success = false; 
+			}
 	     } catch (Exception $e) {
 			 $arrResult['error'][] = $e->getMessage();
 			 $success = false;
@@ -275,6 +291,24 @@ class BeaconModel
 		    }
 		}
 		$arrResult['pathToContent'] = $pathToContent;
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	private function getMostRecentRecord($tablename) {
+		$sql = "SELECT * FROM " . $tablename . " ORDER BY id DESC LIMIT 1";
+		$arrResult = array();
+		$success = false;
+		try {
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute();
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC); // should only return 1 record
+			$arrResult['record'] = $fetch;
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
