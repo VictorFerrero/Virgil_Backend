@@ -114,7 +114,7 @@ class MuseumController
 	}
 
 	// TODO: might have to make this route different for cms and android app
-	public function getAllMuseumsForCMS() {
+	public function getAllMuseumsForCms() {
 		$arr = $this->museumModel->getAllMuseums();
 		foreach($arr['museums'] as $intIndex => $arrAssoc) {
 			$profileJson = $arrAssoc['museumProfileJSON'];
