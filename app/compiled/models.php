@@ -839,15 +839,13 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $tmp = $this->getMostRecentRecord("gallery");
-			if($tmp['success'] == true) {
-				$arrResult['record'] = $tmp['record'];
-				$success = true;
-			}
-			else {
-				$arrResult['record'] = $tmp; // return whole response for debugging
-				$success = false; 
-			}
+			 $sql = "SELECT * FROM gallery WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$data = array('id' => $_POST['id']);
+			$STH->execute($data);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+			$arrResult['record'] = $fetch;
+			$success = true;
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
@@ -980,15 +978,13 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $tmp = $this->getMostRecentRecord("exhibit");
-			if($tmp['success'] == true) {
-				$arrResult['record'] = $tmp['record'];
-				$success = true;
-			}
-			else {
-				$arrResult['record'] = $tmp; // return whole response for debugging
-				$success = false; 
-			}
+			$sql = "SELECT * FROM exhibit WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$data = array('id' => $_POST['id']);
+			$STH->execute($data);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+			$arrResult['record'] = $fetch;
+			$success = true;
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
@@ -1191,15 +1187,13 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			$tmp = $this->getMostRecentRecord("content");
-			if($tmp['success'] == true) {
-				$arrResult['record'] = $tmp['record'];
-				$success = true;
-			}
-			else {
-				$arrResult['record'] = $tmp; // return whole response for debugging
-				$success = false; 
-			}
+			$sql = "SELECT * FROM content WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$data = array('id' => $_POST['id']);
+			$STH->execute($data);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+			$arrResult['record'] = $fetch;
+			$success = true;
 	     } catch (Exception $e) {
 			 $arrResult['error'][] = $e->getMessage();
 			 $success = false;
@@ -1318,15 +1312,13 @@ class MuseumModel
 		try {
 			 $STH = $this->dbo->prepare($sql);
 			 $arrResult['db_result'] = $STH->execute($data);
-			 $tmp = $this->getMostRecentRecord("events");
-			if($tmp['success'] == true) {
-				$arrResult['record'] = $tmp['record'];
-				$success = true;
-			}
-			else {
-				$arrResult['record'] = $tmp; // return whole response for debugging
-				$success = false; 
-			}
+			$sql = "SELECT * FROM events WHERE id=:id";
+			$STH = $this->dbo->prepare($sql);
+			$data = array('id' => $_POST['id']);
+			$STH->execute($data);
+			$fetch = $STH->fetch(PDO::FETCH_ASSOC);
+			$arrResult['record'] = $fetch;
+			$success = true;
 	     } catch (Exception $e) {
 			 $arrResult['error'] = $e->getMessage();
 			 $success = false;
