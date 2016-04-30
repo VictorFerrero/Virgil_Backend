@@ -844,6 +844,9 @@ class MuseumModel
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 		$arrResult = array('error' => array());
+		$arrResult['target_file'] = $target_file;
+		$arrResult['pathToContent'] = $pathToContent;
+		$arrResult['FILES'] = $_FILES;
 		// if there is no directory for this museum, then create it
 		if (!is_dir($target_dir)) {
    			 mkdir($target_dir, 0777, true);
