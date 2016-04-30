@@ -22,7 +22,12 @@ $router->get($routePrefix.'getMuseums/{queryString}', function($queryString){
 
 $router->get($routePrefix.'getAllMuseums', function(){
 	$museumController = new MuseumController();
-	return json_encode($museumController->getAllMuseums());
+	return json_encode($museumController->getAllMuseumsForAndroidApp());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
+$router->get($routePrefix.'getAllMuseumsForCms', function(){
+	$museumController = new MuseumController();
+	return json_encode($museumController->getAllMuseumsForCms());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
 $router->post($routePrefix.'account/login', function(){

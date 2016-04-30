@@ -100,7 +100,6 @@ class MuseumController
 	public function getEntireMuseum() {
 		$arrValues = array();
 		$id = $_REQUEST['id'];
-		
 		$arrResult = $this->museumModel->getEntireMuseum($id);
 		return $arrResult;
 	}
@@ -110,8 +109,12 @@ class MuseumController
 		return $arrResult;
 	}
 	
+	public function getAllMuseumsForAndroidApp() {
+		return this->museumModel->getAllMuseums();
+	}
+
 	// TODO: might have to make this route different for cms and android app
-	public function getAllMuseums() {
+	public function getAllMuseumsForCMS() {
 		$arr = $this->museumModel->getAllMuseums();
 		foreach($arr['museums'] as $intIndex => $arrAssoc) {
 			$profileJson = $arrAssoc['museumProfileJSON'];
