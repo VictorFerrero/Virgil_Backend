@@ -26,7 +26,7 @@ class MuseumController
 	}
 	
 	public function getAllMuseumsForAndroidApp() {
-		return this->museumModel->getAllMuseums();
+		return $this->museumModel->getAllMuseums();
 	}
 
 	// TODO: might have to make this route different for cms and android app
@@ -75,8 +75,8 @@ class MuseumController
 	private function splitTimes($strTime) {
 		$arrResult = array();
 		$arrTmp = explode("-", $strTime);
-		$arrResult[0] = $arrTmp[0].trim();
-		$arrResult[1] = $arrTmp[1].trim();
+		$arrResult[0] = trim($arrTmp[0]);
+		$arrResult[1] = trim($arrTmp[1]);
 		return $arrResult;
 	}
 	
