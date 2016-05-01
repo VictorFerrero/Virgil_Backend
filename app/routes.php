@@ -133,6 +133,13 @@ $router->post($routePrefix.'beacons/getContentForBeacon', function(){
 	return json_encode($beaconController->getContentForBeacon());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
+$router->get($routePrefix.'beacons/getContentForBeacon/{major}/{minor}', function($major, $minor){
+	$beaconController = new BeaconController();
+	$_POST['major'] = $major;
+	$_POST['minor'] = $minor;
+	return json_encode($beaconController->getContentForBeacon());
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
 $router->post($routePrefix.'beacons/addContentForBeacon', function(){
 	$beaconController = new BeaconController();
 	return json_encode($beaconController->addContentForBeacon());
