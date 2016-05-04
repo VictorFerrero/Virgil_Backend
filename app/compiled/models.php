@@ -1052,12 +1052,14 @@ class MuseumModel
 	public function createContent() {
 		// TODO: need to mess around with uploading images first.
 		// will need to write some test scripts so i get the hang of it
-		header("multipart/form-data");
+		//header("multipart/form-data");
 		$museumId = $_POST['museumId'];
 		$success = false;
 		$arrResult = array();
 		if(isset($_POST['hasImage'])) {
-			$arrResult = $this->handleUploadedImage($museumId);
+			//$arrResult = $this->handleUploadedImage($museumId);
+			$img = $this->decode64($_POST['base64']);
+			$arrResult = $this->storeFile($museumId, $img, $_POST['fileName']);
 		}
 		else {
 			// no image for the content. we will store "noImage"
@@ -1460,6 +1462,73 @@ class MuseumModel
 			$arrResult['error'] = $e->getMessage();
 			$success = false;
 		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+
+	private function decode64($strBase64) {
+		$data = explode(',', $base64_string);
+		$base64 = $data[1];
+		$img = base64_decode($base64);
+		return $img;
+	}
+
+	public function storeFile($museumId, $img, $fileName) {
+		$target_dir = "/var/www/html/Virgil_Uploads/images/" . $museumId . "/";
+		$target_file = $target_dir . $fileName;
+		$pathToContent = $museumId . "/" . $fileName;
+		$uploadOk = 1;
+		$arrResult = array('error' => array());
+		$arrResult['target_file'] = $target_file;
+		$arrResult['pathToContent'] = $pathToContent;
+		// if there is no directory for this museum, then create it
+		if (!is_dir($target_dir)) {
+   			 mkdir($target_dir, 0777, true);
+		}
+		// Check if file already exists
+		if (file_exists($target_file)) {
+		//   echo "Sorry, file already exists.";
+		   $arrResult['error'][] = "File already exists";
+		    $uploadOk = 0;
+		}
+		// Check file size. handle this client side
+		/*
+		if ($_FILES["imageToUpload"]["size"] > 500000) {
+		  //  echo "Sorry, your file is too large.";
+		  $arrResult['error'][] = "the file is too large";
+		    $uploadOk = 0;
+		}
+		*/
+		// Allow certain file formats. handle this client side
+		/*
+		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+		&& $imageFileType != "gif" ) {
+		 //   echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+		 $arrResult['error'][] = "image format not supported";
+		    $uploadOk = 0;
+		}
+		*/
+		// Check if $uploadOk is set to 0 by an error
+		if ($uploadOk == 0) {
+		    echo "Sorry, your file was not uploaded.";
+		    $arrResult['error'][] = "You file was not uploaded";
+		    $success = false;
+		// if everything is ok, try to upload file
+		} 
+		else {
+		    if (move_uploaded_file($img, $target_file)) {
+		    	chmod($target_file, 0777);
+		        echo "The file has been uploaded.";
+		    	$success = true;
+		    } 
+		    else {
+		        echo "Sorry, there was an error uploading your file.";
+		        $arrResult['error'][] = "Sorry, there was an error uploading your file.";
+		    	$success = false;
+		    }
+		}
+		$arrResult['pathToContent'] = $pathToContent;
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
