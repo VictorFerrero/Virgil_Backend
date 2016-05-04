@@ -529,6 +529,8 @@ class MuseumModel
 			// grab the path to content for the database
 			$pathToContent = $arrResult['pathToContent'];
 			// now we will add this record to the db
+			$arrResult['POST'] = $_POST;
+			$arrResult['FILE'] = $_FILES;
 			try {
 				$sql = "INSERT INTO content VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :pathToContent, :contentProfileJSON)";
 				$data = array(
@@ -853,7 +855,7 @@ class MuseumModel
 		    else {
 		        echo "File is not an image.";
 		        $arrResult['error'][] = "File is not an image";
-		        $uploadOk = 0;
+		        $uploadOk = 0;  
 		    }
 		}
 		// Check if file already exists
