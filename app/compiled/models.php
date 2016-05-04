@@ -1056,6 +1056,7 @@ class MuseumModel
 		$museumId = $_POST['museumId'];
 		$success = false;
 		$arrResult = array();
+			$arrResult['POST'] = $_POST;
 		if(isset($_POST['hasImage'])) {
 			//$arrResult = $this->handleUploadedImage($museumId);
 			$img = $this->decode64($_POST['base64']);
@@ -1072,8 +1073,6 @@ class MuseumModel
 			// grab the path to content for the database
 			$pathToContent = $arrResult['pathToContent'];
 			// now we will add this record to the db
-			$arrResult['POST'] = $_POST;
-			$arrResult['FILE'] = $_FILES;
 			try {
 				$sql = "INSERT INTO content VALUES (NULL, :galleryId, :exhibitId,:museumId, :description, :pathToContent, :contentProfileJSON)";
 				$data = array(
@@ -1467,8 +1466,9 @@ class MuseumModel
 	}
 
 	private function decode64($strBase64) {
-		$data = explode(',', $strBase64);
-		$base64 = $data[1];
+		//$data = explode(',', $strBase64);
+		//$base64 = $data[1];
+		$base64 = $strBase64;
 		$img = base64_decode($base64);
 		return $img;
 	}
