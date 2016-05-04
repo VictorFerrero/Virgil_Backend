@@ -1056,11 +1056,12 @@ class MuseumModel
 		$museumId = $_POST['museumId'];
 		$success = false;
 		$arrResult = array();
-			$arrResult['POST'] = $_POST;
+		$arrResult['POST'] = $_POST;
+		$arrResult['FILE'] = $_FILES;
 		if(isset($_POST['hasImage'])) {
-			//$arrResult = $this->handleUploadedImage($museumId);
-			$img = $this->decode64($_POST['base64']);
-			$arrResult = $this->storeFile($museumId, $img, $_POST['fileName']);
+			$arrResult = $this->handleUploadedImage($museumId);
+			//$img = $this->decode64($_POST['base64']);
+			//$arrResult = $this->storeFile($museumId, $img, $_POST['fileName']);
 		}
 		else {
 			// no image for the content. we will store "noImage"
