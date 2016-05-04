@@ -512,7 +512,7 @@ class MuseumModel
 	public function createContent() {
 		// TODO: need to mess around with uploading images first.
 		// will need to write some test scripts so i get the hang of it
-		header("multipart/form-data");
+		//header("multipart/form-data");
 		$museumId = $_POST['museumId'];
 		$success = false;
 		$arrResult = array();
