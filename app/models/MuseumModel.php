@@ -927,7 +927,7 @@ class MuseumModel
 	}
 
 	private function decode64($strBase64) {
-		$data = explode(',', $base64_string);
+		$data = explode(',', $strBase64);
 		$base64 = $data[1];
 		$img = base64_decode($base64);
 		return $img;
