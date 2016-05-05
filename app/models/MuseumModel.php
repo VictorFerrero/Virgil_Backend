@@ -859,18 +859,18 @@ class MuseumModel
 		if(isset($_POST["submit"])) {
 		    $check = getimagesize($_FILES["imageToUpload"]["tmp_name"]);
 		    if($check !== false) {
-		        echo "File is an image - " . $check["mime"] . ".";
+		    //    echo "File is an image - " . $check["mime"] . ".";
 		        $uploadOk = 1;
 		    } 
 		    else {
-		        echo "File is not an image.";
+		    //    echo "File is not an image.";
 		        $arrResult['error'][] = "File is not an image";
 		        $uploadOk = 0;  
 		    }
 		}
 		// Check if file already exists
 		if (file_exists($target_file)) {
-		   echo "Sorry, file already exists.";
+		   //echo "Sorry, file already exists.";
 		   $arrResult['error'][] = "File already exists";
 		    $uploadOk = 0;
 		}
@@ -893,7 +893,7 @@ class MuseumModel
 		*/
 		// Check if $uploadOk is set to 0 by an error
 		if ($uploadOk == 0) {
-		    echo "Sorry, your file was not uploaded.";
+		    //echo "Sorry, your file was not uploaded.";
 		    $arrResult['error'][] = "You file was not uploaded";
 		    $success = false;
 		// if everything is ok, try to upload file
@@ -901,11 +901,11 @@ class MuseumModel
 		else {
 		    if (move_uploaded_file($_FILES["imageToUpload"]["tmp_name"], $target_file)) {
 		    	chmod($target_file, 0777);
-		        echo "The file ". basename( $_FILES["imageToUpload"]["name"]). " has been uploaded.";
+		      //  echo "The file ". basename( $_FILES["imageToUpload"]["name"]). " has been uploaded.";
 		    	$success = true;
 		    } 
 		    else {
-		        echo "Sorry, there was an error uploading your file.";
+		       // echo "Sorry, there was an error uploading your file.";
 		        $arrResult['error'][] = "Sorry, there was an error uploading your file.";
 		    	$success = false;
 		    }
