@@ -407,7 +407,6 @@ class BeaconModel
 		$arrResult['success'] = $success;
 		return $arrResult;
 	}
-	}
 
 	private function handleUploadedImage($museumId) {
 		$arrResult = array('error' => array());
