@@ -523,8 +523,6 @@ class MuseumModel
 		$museumId = $_POST['museumId'];
 		$success = false;
 		$arrResult = array();
-		$arrResult['POST'] = $_POST;
-		$arrResult['FILE'] = $_FILES;
 		if(isset($_POST['hasImage'])) {
 			$arrResult = $this->handleUploadedImage($museumId);
 			//$img = $this->decode64($_POST['base64']);
@@ -695,6 +693,7 @@ class MuseumModel
 			$success = false;
 		}
 		$arrResult['success'] = $success;
+		$arrResult['id'] = $_POST['id'];
 		return $arrResult;
 	}
 
