@@ -1375,6 +1375,7 @@ class MuseumModel
 			$arrResult['error'] = $e->getMessage();
 		}
 		$arrResult['success'] = $success;
+		$arrResult['id'] = $id;
 		return $arrResult;
 	}
 
