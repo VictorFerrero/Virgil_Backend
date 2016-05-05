@@ -610,6 +610,13 @@ class MuseumModel
 			$STH->execute($data);
 			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
 			$arrResult['content'] = $fetch;
+
+			$sql = "SELECT * FROM events WHERE museumId=:museumId";
+			$data = array('museumId' => $id);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could be any amount of galleries, def wanna use fetchAll
+			$arrResult['events'] = $fetch;
 			$success = true;
 		} catch (Exception $e) {
 			$success = false;
