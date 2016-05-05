@@ -58,6 +58,10 @@ class BeaconController
 	public function deleteContentForBeacon(){
 		return ($this->beaconModel->deleteContentForBeacon());
 	}
+
+	public function getBeaconsForMuseum() {
+		return ($this->beaconModel->getBeaconsForMuseum());
+	}
 }
 ?>
 <?php

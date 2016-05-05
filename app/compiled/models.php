@@ -382,9 +382,32 @@ class BeaconModel
 			$success = false;
 		}
 		$arrResult['success'] = $success;
+		$arrResult['id'] = $_POST['id'];
 		return $arrResult;
 	}
 
+	public function getBeaconsForMuseum($major) {
+		// will be passed in uuid, major, and minor values
+		$arrResult = array();
+		$success = false;
+		try {
+			$sql = "SELECT * FROM beacon_content WHERE major=:major";
+			$data = array(
+					'major' => $major,
+			);
+			$STH = $this->dbo->prepare($sql);
+			$STH->execute($data);
+			$fetch = $STH->fetchAll(PDO::FETCH_ASSOC); // could have more then 1 content record associated with this beacon
+			$arrResult['beaconContent'] = $fetch;
+			$success = true;
+		} catch(Exception $e) {
+			$arrResult['error'] = $e->getMessage();
+			$success = false;
+		}
+		$arrResult['success'] = $success;
+		return $arrResult;
+	}
+	}
 
 	private function handleUploadedImage($museumId) {
 		$arrResult = array('error' => array());

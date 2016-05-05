@@ -153,4 +153,9 @@ $router->post($routePrefix.'beacons/deleteContentForBeacon', function(){
 	return json_encode($beaconController->deleteContentForBeacon());
 }, array('before' => 'statsStart', 'after' => 'statsComplete'));
 
+$router->get($routePrefix.'beacons/getBeaconsForMuseum/{major}', function($major){
+	$beaconController = new BeaconController();
+	return json_encode($beaconController->getBeaconsForMuseum($major));
+}, array('before' => 'statsStart', 'after' => 'statsComplete'));
+
 ?>
